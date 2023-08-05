@@ -1,0 +1,17 @@
+// Copyright
+
+#if WITH_AUTOMATION_TESTS
+
+#include "TestNameTest.h"
+#include "CoreMinimal.h"
+#include "Misc/AutomationTest.h"
+#include "Tests/AutomationCommon.h"
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FTestNameTest, "ProjectName.CategoryName.TestName", EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter);
+
+bool FTestNameTest::RunTest(const FString& Parameters)
+{
+    return true;
+}
+
+#endif

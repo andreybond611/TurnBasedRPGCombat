@@ -1,0 +1,18 @@
+// Copyright
+
+#if WITH_AUTOMATION_TESTS
+#include "Tests/AutomationCommon.h"
+#include "TestName.spec.h"
+#include "CoreMinimal.h"
+#include "Misc/AutomationTest.h"
+#include "Tests/TestUtils.h"
+
+BEGIN_DEFINE_SPEC(FTestNameSpec, "ProjectName.Category.TestName", EAutomationTestFlags::ProductFilter | EAutomationTestFlags::ApplicationContextMask)
+
+UWorld* World = nullptr;
+const char* MapName = "/Game/TurnBasedRPGCombat/Maps/TopDownMap";
+
+
+END_DEFINE_SPEC(FTestNameSpec)
+
+#endif
