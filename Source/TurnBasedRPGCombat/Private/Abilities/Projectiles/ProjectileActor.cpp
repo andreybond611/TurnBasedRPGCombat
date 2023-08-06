@@ -41,6 +41,15 @@ AProjectileActor::AProjectileActor()
 
 	SphereCollision->OnComponentHit.AddDynamic(this, &AProjectileActor::OnHit);
 	SphereCollision->OnComponentBeginOverlap.AddDynamic(this, &AProjectileActor::OnOverlap);
+
+	Mesh->SetRelativeRotation(FRotator{90.f, 0.f, 0.f});
+	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	SphereCollision->InitSphereRadius(10.f);
+	SphereCollision->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
+	SphereCollision->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+	SphereCollision->SetNotifyRigidBodyCollision(true);
+
 }
 
 void AProjectileActor::SetProjectileOwner(AActor* InProjectileOwner)
