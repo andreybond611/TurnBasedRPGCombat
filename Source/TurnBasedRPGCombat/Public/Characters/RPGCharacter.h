@@ -179,9 +179,18 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool HasTag(const FGameplayTag& Tag) const;
 
+#if WITH_EDITORONLY_DATA
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ARPGCharacter> CharacterBaseBPClass;
+	UPROPERTY(EditAnywhere)
+	TArray<FName> StatsToRemove;
+#endif
+
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void PostInitializeComponents() override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
 	virtual void Tick(float DeltaTime) override;
@@ -273,4 +282,7 @@ private:
 	URPGAnimInstance* AnimInstance;
 
 	void PlayHitAnimation(EHitDirection HitDirection);
+#if WITH_EDITOR
+	void AddMissingStats();
+#endif
 };

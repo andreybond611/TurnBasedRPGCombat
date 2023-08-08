@@ -76,6 +76,19 @@ void UStatsComponent::AddMultiplier(FName StatName, float Multiplier)
 	}
 }
 
+void UStatsComponent::AddStatToCollection(FName StatName, UGameStat* Stat)
+{
+	if (StatName != NAME_None && Stat != nullptr)
+	{
+		Stats.Add(StatName, Stat);
+	}
+}
+
+void UStatsComponent::DeleteStatAt(FName StatName)
+{
+	Stats.Remove(StatName);
+}
+
 void UStatsComponent::BeginPlay()
 {
 	Super::BeginPlay();

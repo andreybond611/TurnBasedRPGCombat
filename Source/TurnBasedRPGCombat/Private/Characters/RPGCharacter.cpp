@@ -26,7 +26,7 @@
 #include "Components/BoxComponent.h"
 #include "NavAreas/NavArea_Default.h"
 #include "NavAreas/NavArea_Null.h"
-#include "UI/DamageNumbersWidget.h"
+#include "UI/FloatingNumbersWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(RPGCharacter, All, All);
 
@@ -160,48 +160,65 @@ void ARPGCharacter::DisableOutline()
 
 void ARPGCharacter::GetDamaged(const FDamage& Damage)
 {
-	UDamageNumbersWidget* DamageNumbersWidget = Cast<UDamageNumbersWidget>(FloatingDamageWidgetComponent->GetUserWidgetObject());
+	UFloatingNumbersWidget* DamageNumbersWidget = Cast<UFloatingNumbersWidget>(FloatingDamageWidgetComponent->GetUserWidgetObject());
 	check(DamageNumbersWidget);
 
-	float HealthDamage = 0;
+	float HealthDamage = 0.f;
 
-	EDamageColor DamageColor;
+	EFloatingNumberColor DamageColor;
 	FName ArmorStatName;
 	if (Damage.DamageType == EDamageType::Physical)
 	{
 		ArmorStatName = SN_PhysicalArmor;
-		DamageColor = EDamageColor::PhysicalArmor;
+		DamageColor = EFloatingNumberColor::PhysicalArmor;
 	}
 	else
 	{
 		ArmorStatName = SN_MagicArmor;
-		DamageColor = EDamageColor::MagicArmor;
+		DamageColor = EFloatingNumberColor::MagicArmor;
 	}
 
-	float Armor = Stats()->Get(ArmorStatName);
-	if (Armor >= Damage.DamageNumber)
+	// if resistances are higher than 100%, then heal instead of damaging
+	FName ResistanceStatName = UTurnBasedUtility::DamageTypeToResistanceStat(Damage.DamageType);
+	float DamageMultiplier = 1.f - (Stats()->Get(ResistanceStatName) / 100.f);
+
+	float ActualDamage = Damage.DamageNumber * DamageMultiplier;
+
+	if (ActualDamage > 0.f)
 	{
-		Stats()->Remove(ArmorStatName, Damage.DamageNumber);
-		DamageNumbersWidget->AddDamageNumber(Damage.DamageNumber, DamageColor);
-	}
-	else
-	{
-		if (Armor > 0.f)
+		float Armor = Stats()->Get(ArmorStatName);
+		if (Armor >= ActualDamage)
 		{
-			Stats()->Remove(ArmorStatName, Armor);
-			DamageNumbersWidget->AddDamageNumber(Armor, DamageColor);
-			HealthDamage = -(Armor - Damage.DamageNumber);
+			Stats()->Remove(ArmorStatName, ActualDamage);
+			DamageNumbersWidget->AddFloatingNumber(ActualDamage, DamageColor);
 		}
 		else
 		{
-			HealthDamage = Damage.DamageNumber;
+			if (Armor > 0.f)
+			{
+				Stats()->Remove(ArmorStatName, Armor);
+				DamageNumbersWidget->AddFloatingNumber(Armor, DamageColor);
+				HealthDamage = -(Armor - ActualDamage);
+			}
+			else
+			{
+				HealthDamage = ActualDamage;
+			}
+		}
+
+		if (HealthDamage > 0.f)
+		{
+			Stats()->Remove(SN_Health, HealthDamage);
+			DamageNumbersWidget->AddFloatingNumber(HealthDamage, static_cast<EFloatingNumberColor>(Damage.DamageType));
 		}
 	}
-
-	if (HealthDamage > 0.f)
+	else if (ActualDamage < 0.f)
 	{
-		Stats()->Remove(SN_Health, HealthDamage);
-		DamageNumbersWidget->AddDamageNumber(HealthDamage, static_cast<EDamageColor>(Damage.DamageType));
+		Stats()->Add(SN_Health, FMath::Abs(ActualDamage));
+	}
+	else
+	{
+		DamageNumbersWidget->AddFloatingMessage(NSLOCTEXT("UI", "BlockedDamage", "Inefficient!"));
 	}
 
 	PlayHitAnimation(Damage.HitDirection);
@@ -472,6 +489,52 @@ void ARPGCharacter::PostInitializeComponents()
 
 	TurnBasedComponent->OnTurnBegin.AddDynamic(this, &ARPGCharacter::OnStartTurn);
 	TurnBasedComponent->OnTurnEnd.AddDynamic(this, &ARPGCharacter::OnEndTurn);
+}
+
+void ARPGCharacter::AddMissingStats()
+{
+	if (CharacterBaseBPClass)
+	{
+		auto DefaultCharacter = CharacterBaseBPClass->GetDefaultObject<ARPGCharacter>();
+		if (ensure(DefaultCharacter))
+		{
+			auto DefaultStats = DefaultCharacter->FindComponentByClass<UStatsComponent>();
+			UStatsComponent* CurrentStats = Stats();
+
+			TMap<FName, UGameStat*> StatsMap = DefaultStats->GetAllStats();
+			TArray<FName> StatNames;
+			StatsMap.GenerateKeyArray(StatNames);
+
+			for (FName StatName : StatNames)
+			{
+				UGameStat* FoundStat = CurrentStats->FindStat(StatName);
+				if (FoundStat == nullptr)
+				{
+					UGameStat* DefaultStat = DefaultStats->FindStat(StatName);
+					UGameStat* NewStat = DuplicateObject(DefaultStat, CurrentStats);
+					CurrentStats->AddStatToCollection(StatName, NewStat);
+				}
+			}
+		}
+	}
+}
+
+void ARPGCharacter::OnConstruction(const FTransform& Transform)
+{
+	Super::OnConstruction(Transform);
+#if WITH_EDITOR
+
+	if (!HasAllFlags(RF_ClassDefaultObject))
+	{
+		for (FName StatName : StatsToRemove)
+		{
+			TMap<FName, UGameStat*> StatsMap = Stats()->GetAllStats();
+			StatsMap.Remove(StatName);
+		}
+	}
+
+	AddMissingStats();
+#endif
 }
 
 void ARPGCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)

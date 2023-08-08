@@ -4,29 +4,31 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "DamageNumbersWidget.generated.h"
+#include "Utility/TurnBasedTypes.h"
+#include "FloatingNumbersWidget.generated.h"
 
-class UFloatingDamageNumberWidget;
+class UFloatingNumberWidget;
 class UCanvasPanel;
 /**
  * Shows damage numbers around a recently damaged actor
  */
 UCLASS()
-class TURNBASEDRPGCOMBAT_API UDamageNumbersWidget : public UUserWidget
+class TURNBASEDRPGCOMBAT_API UFloatingNumbersWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void AddDamageNumber(int32 Damage, FColor Color = FColor::White);
-	void AddDamageNumber(int32 Damage, EDamageColor DamageType);
+	void AddFloatingNumber(int32 Number, FColor Color = FColor::White);
+	void AddFloatingNumber(int32 Number, EFloatingNumberColor Color);
 
-	FColor GetColorFromDamageType(EDamageColor DamageType) const;
+	FColor GetColorFromDamageType(EFloatingNumberColor DamageType) const;
+	void AddFloatingMessage(const FText& Message, FColor Color = FColor::White);
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UCanvasPanel* DamagePanel;
+	UCanvasPanel* FloatingNumbersPanel;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<UFloatingDamageNumberWidget> FloatingDamageWidgetClass;
+	TSubclassOf<UFloatingNumberWidget> FloatingDamageWidgetClass;
 
 	UPROPERTY(EditAnywhere)
 	FColor PhysicalDamageColor;
@@ -43,4 +45,7 @@ private:
 	FColor MagicArmorDamageColor;
 	UPROPERTY(EditAnywhere)
 	FColor PhysicalArmorDamageColor;
+
+	UPROPERTY(EditAnywhere)
+	FColor HealColor;
 };

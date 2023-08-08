@@ -15,4 +15,7 @@ class TURNBASEDRPGCOMBAT_API UCharacterStatsComponent : public UStatsComponent
 	GENERATED_BODY()
 protected:
 	virtual void InitializeStats() override;
+
+private:
+	void OnHeal(float HealedHealth);
 };

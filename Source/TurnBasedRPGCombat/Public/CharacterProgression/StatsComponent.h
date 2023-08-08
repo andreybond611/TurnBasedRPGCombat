@@ -42,6 +42,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddMultiplier(FName StatName, float Multiplier);
 
+
+	TMap<FName, UGameStat*> GetAllStats() const { return Stats; }
+	void AddStatToCollection(FName StatName, UGameStat* Stat);
+	void DeleteStatAt(FName StatName);
+
 protected:
 	virtual void BeginPlay() override;
 

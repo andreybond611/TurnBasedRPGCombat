@@ -28,4 +28,6 @@ public:
 	static EHitDirection FindHitDirection(AActor* Attacker, AActor* Target);
 	static EHitDirection FindHitDirection(FVector AttackLocation, AActor* Target);
 	static TArray<FVector> FindPointsAlongPath(UNavigationPath* NavigationPath, float DistanceBetweenPoints);
+
+	static FName DamageTypeToResistanceStat(EDamageType DamageType);
 };

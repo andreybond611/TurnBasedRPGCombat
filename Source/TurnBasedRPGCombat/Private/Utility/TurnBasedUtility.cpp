@@ -144,3 +144,16 @@ TArray<FVector> UTurnBasedUtility::FindPointsAlongPath(UNavigationPath* Navigati
 
 	return Result;
 }
+
+FName UTurnBasedUtility::DamageTypeToResistanceStat(EDamageType DamageType)
+{
+	switch (DamageType)
+	{
+	case EDamageType::Physical: return SN_PhysicalArmor;
+	case EDamageType::Fire: return SN_FireResistance;
+	case EDamageType::Earth: return SN_EarthResistance;
+	case EDamageType::Poison: return SN_PoisonResistance;
+	case EDamageType::Ice: return SN_IceResistance;
+	default: checkNoEntry(); return NAME_None;
+	}
+}

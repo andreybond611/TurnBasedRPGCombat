@@ -67,9 +67,15 @@ const FName SN_MaxPhysicalArmor = FName("MaxPhysicalArmor");
 const FName SN_MagicArmor = FName("MagicArmor");
 const FName SN_MaxMagicArmor = FName("MaxMagicArmor");
 
+const FName SN_PhysicalResistance = FName("PhysicalResistance");
+const FName SN_FireResistance = FName("FireResistance");
+const FName SN_EarthResistance = FName("EarthResistance");
+const FName SN_PoisonResistance = FName("PoisonResistance");
+const FName SN_IceResistance = FName("IceResistance");
+
 /**
  * When adding new damage type, also add a new entry in the same place in EDamageColor
- * and add and configure new color in UDamageNumbersWidget
+ * and add and configure new color in UFloatingNumbersWidget
  */
 UENUM(BlueprintType)
 enum class EDamageType : uint8
@@ -82,7 +88,7 @@ enum class EDamageType : uint8
 };
 
 UENUM(BlueprintType)
-enum class EDamageColor : uint8
+enum class EFloatingNumberColor : uint8
 {
 	Physical,
 	Fire,
@@ -90,7 +96,8 @@ enum class EDamageColor : uint8
 	Poison,
 	Ice,
 	PhysicalArmor,
-	MagicArmor
+	MagicArmor,
+	Heal
 };
 
 USTRUCT(BlueprintType)

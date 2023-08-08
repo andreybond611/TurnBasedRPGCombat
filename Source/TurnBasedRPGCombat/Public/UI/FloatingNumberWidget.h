@@ -4,22 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "FloatingDamageNumberWidget.generated.h"
+#include "FloatingNumberWidget.generated.h"
 
 class UTextBlock;
 /**
  * 
  */
 UCLASS()
-class TURNBASEDRPGCOMBAT_API UFloatingDamageNumberWidget : public UUserWidget
+class TURNBASEDRPGCOMBAT_API UFloatingNumberWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void Init(int32 Damage, FColor Color = FColor::White);
+	void Init(int32 Number, FColor Color = FColor::White);
+	void Init(const FText& Message, FColor Color = FColor::White);
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DamageText;
+	UTextBlock* NumberText;
 
 	UPROPERTY(Transient, meta = (BindWidgetAnim))
 	UWidgetAnimation* FloatUp;
