@@ -45,7 +45,7 @@ void UStunEffect::ApplyVisuals()
 	if (!FoundComponents.IsEmpty())
 	{
 		auto SkeletalMeshComponent = Cast<USkeletalMeshComponent>(FoundComponents[0]);
-		if (ensureMsgf(SkeletalMeshComponent, TEXT("Component %s with \"CharacterMesh\" tag is not of type USkeletalMesh. Owner: %s"),
+		if (ensureMsgf(SkeletalMeshComponent, TEXT("Component %s with \"CharacterMesh\" tag is not of type USkeletalMesh. Owner: %s"), //-V521
 			*FoundComponents[0]->GetName()), *TargetActor->GetName())
 		{
 			SpawnedSystem = UNiagaraFunctionLibrary::SpawnSystemAttached(StunVisual, SkeletalMeshComponent, "AboveHead", FVector(), FRotator(90.f, 0.f, 0.f),

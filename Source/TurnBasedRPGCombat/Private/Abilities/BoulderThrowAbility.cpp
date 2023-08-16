@@ -99,8 +99,10 @@ void UBoulderThrowAbility::ProcessHits(const FVector& HitLocation, TArray<FHitRe
 		Damage.HitDirection = HitDirection;
 		Damage.DamageType = EDamageType::Earth;
 
-		auto DamageableActor = Cast<IDamageable>(HitActor);
-		DamageableActor->GetDamaged(Damage);
+		if (auto DamageableActor = Cast<IDamageable>(HitActor))
+		{
+			DamageableActor->GetDamaged(Damage);
+		}
 	}
 }
 
@@ -150,7 +152,8 @@ void UBoulderThrowAbility::SpawnBoulder()
 	ProjectileSpawnLocation.Z += InitialRelativeZ;
 
 	Boulder = GetWorld()->SpawnActor<ABoulderProjectile>(*BoulderProjectile, ProjectileSpawnLocation, FRotator{});
-	Boulder->SetProjectileOwner(Owner);
-
-	ensure(Boulder);
+	if (ensure(Boulder))
+	{
+		Boulder->SetProjectileOwner(Owner);
+	}
 }

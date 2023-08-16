@@ -40,7 +40,7 @@ void UHUDWidget::DisplayCharacter(ARPGCharacter* Character)
 		HealthBar->SetVisibility(ESlateVisibility::Visible);
 		HealthBar->SetShowHealthNumbersOnlyOnMouseOver(true);
 
-		ActionPointsBar->Bind(Stats->FindStat(SN_ActionPoints), Stats->FindStat(SN_MaxActionPoints));
+		ActionPointsBar->Bind(Stats->FindStat(SN_ActionPoints));
 		ActionPointsBar->SetVisibility(ESlateVisibility::Visible);
 
 		if (Character->IsInBattle())

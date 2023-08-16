@@ -59,7 +59,7 @@ void UMoveTarget::ShowDestination(const FHitResult& HitResult)
 	UNavigationPath* DestinationPath = nullptr;
 	AActor* HitActor = HitResult.GetActor();
 	Target.Location = HitResult.Location;
-	if (HitActor->GetClass()->ImplementsInterface(UTBBattleParticipant::StaticClass()))
+	if (HitActor->GetClass()->ImplementsInterface(UTBBattleParticipant::StaticClass())) //-V522
 	{
 		if (IsDetected(HitActor))
 		{
@@ -166,7 +166,7 @@ void UMoveTarget::AddTargetInfoLocation(UNavigationPath* DestinationPath)
 		return;
 	}
 
-	if (DestinationPath && !DestinationPath->IsValid())
+	if (!DestinationPath->IsValid())
 	{
 		PlayerController->AddTargetInfoSectionCantReachDestination();
 	}

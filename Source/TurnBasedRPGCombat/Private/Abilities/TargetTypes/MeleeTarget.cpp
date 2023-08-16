@@ -30,7 +30,10 @@ void UMeleeTarget::StartTargeting(ARPGPlayerController* InPlayerController)
 		MoveTarget = Cast<UMoveTarget>(AbilityComponent->GetMoveAbility()->GetTargetState());
 	}
 
-	MoveTarget->StartTargeting(InPlayerController);
+	if (ensure(MoveTarget))
+	{
+		MoveTarget->StartTargeting(InPlayerController);
+	}
 }
 
 void UMeleeTarget::TickTargetAbility(const FHitResult& CursorHitResult)

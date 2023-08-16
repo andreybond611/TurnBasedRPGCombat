@@ -79,7 +79,7 @@ void UTurnSequenceWidget::OnNextCombatant(TScriptInterface<ITBBattleParticipant>
 	if (NextParticipant != nullptr)
 	{
 		RemoveFirstPortrait();
-		GetFirstPortrait()->PlayCurrentTurnAnimation();
+		GetFirstPortrait()->PlayCurrentTurnAnimation(); //-V522
 	}
 	NextParticipant = Combatant;
 }

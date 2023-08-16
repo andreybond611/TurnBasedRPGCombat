@@ -17,6 +17,11 @@ void UNavStaticMeshComponent::GetNavigationData(FNavigationRelevantData& Data) c
 	{
 		UNavCollisionBase* NavCollisionBase = GetStaticMesh()->GetNavCollision();
 		UNavCollision* NavCollision = Cast<UNavCollision>(NavCollisionBase);
+		if (!NavCollision)
+		{
+			return;
+		}
+
 		NavCollision->AreaClass = NavAreaClass;
 		const bool bExportAsObstacle = bOverrideNavigationExport ? bForceNavigationObstacle : NavCollision->IsDynamicObstacle();
 

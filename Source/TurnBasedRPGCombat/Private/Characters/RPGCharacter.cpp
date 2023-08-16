@@ -190,7 +190,7 @@ void ARPGCharacter::GetDamaged(const FDamage& Damage)
 		if (Armor >= ActualDamage)
 		{
 			Stats()->Remove(ArmorStatName, ActualDamage);
-			DamageNumbersWidget->AddFloatingNumber(ActualDamage, DamageColor);
+			DamageNumbersWidget->AddFloatingNumber(ActualDamage, DamageColor); //-V1004
 		}
 		else
 		{
@@ -235,12 +235,18 @@ bool ARPGCharacter::IsTurnAllowed()
 void ARPGCharacter::FocusCamera()
 {
 	auto* PlayerController = GetWorld()->GetFirstPlayerController<ARPGPlayerController>();
-	check(PlayerController)
+	if (!PlayerController)
+	{
+		return;
+	}
 
-		auto* PlayerCamera = PlayerController->GetPawn<APlayerCamera>();
-	check(PlayerCamera)
+	auto* PlayerCamera = PlayerController->GetPawn<APlayerCamera>();
+	if (!PlayerCamera)
+	{
+		return;
+	}
 
-		PlayerCamera->StartFollowing(this);
+	PlayerCamera->StartFollowing(this);
 }
 
 void ARPGCharacter::OnStartTurn()
@@ -475,10 +481,10 @@ void ARPGCharacter::BeginPlay()
 	}
 
 	AnimInstance = Cast<URPGAnimInstance>(GetMesh()->GetAnimInstance());
-	check(AnimInstance)
-
-		StatsComponent->FindStat(SN_Health)
-			->OnReachMinValue.AddUObject(this, &ARPGCharacter::Die);
+	if (ensureMsgf(AnimInstance, TEXT("Wrong anim instance in %s"), *GetName()))
+	{
+		StatsComponent->FindStat(SN_Health)->OnReachMinValue.AddUObject(this, &ARPGCharacter::Die);
+	}
 
 	GetCapsuleComponent()->SetCanEverAffectNavigation(true);
 }
@@ -561,7 +567,7 @@ void ARPGCharacter::Rotate(float DeltaTime)
 
 float ARPGCharacter::CalculateAverageMovePerFrame(float FrameMove)
 {
-	if (FrameMove != 0.f)
+	if (!FMath::IsNearlyZero(FrameMove))
 	{
 		FrameMoves.Add(FrameMove);
 	}

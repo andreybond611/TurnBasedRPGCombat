@@ -122,4 +122,5 @@ private:
 	void Rotate(float DeltaSeconds);
 	void MoveToRoot(float DeltaSeconds);
 	void Follow(float DeltaSeconds);
+	void DisableFollowWhenMoved();
 };

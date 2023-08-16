@@ -15,8 +15,22 @@ EBTNodeResult::Type UBTTask_ChooseAbility::ExecuteTask(UBehaviorTreeComponent& O
 	BehaviorTreeComponent = &OwnerComp;
 	AActor* Owner = OwnerComp.GetOwner();
 	AAIController* AIController = Cast<AAIController>(Owner);
+	if (!AIController)
+	{
+		return EBTNodeResult::Aborted;
+	}
+
 	APawn* ControlledPawn = AIController->GetPawn();
+	if (!ControlledPawn)
+	{
+		return EBTNodeResult::Aborted;
+	}
+
 	ATurnBasedBattle* CurrentBattle = Cast<ATurnBasedBattle>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(CurrentBattleName));
+	if (!CurrentBattle)
+	{
+		return EBTNodeResult::Aborted;
+	}
 
 	if (auto AbilityComponent = ControlledPawn->FindComponentByClass<UAbilityComponent>())
 	{

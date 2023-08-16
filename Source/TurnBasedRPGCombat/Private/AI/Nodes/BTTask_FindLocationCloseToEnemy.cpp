@@ -15,6 +15,11 @@ EBTNodeResult::Type UBTTask_FindLocationCloseToEnemy::ExecuteTask(UBehaviorTreeC
 	if (auto Pawn = AIController->GetPawn())
 	{
 		ATurnBasedBattle* Battle = Cast<ATurnBasedBattle>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(CurrentBattleName));
+		if (!Battle)
+		{
+			return EBTNodeResult::Aborted;
+		}
+
 		TArray<TScriptInterface<ITBBattleParticipant>> Enemies = Battle->GetParticipantsWithAttitudeTo(Pawn, ETeamAttitude::Hostile);
 
 		float MinDistance = TNumericLimits<float>::Max();

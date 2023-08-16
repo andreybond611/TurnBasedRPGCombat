@@ -6,8 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include "ActionPointsBarWidget.generated.h"
 
-class UTextBlock;
-class UProgressBar;
+class UHorizontalBox;
+class UActionPointWidget;
 class UGameStat;
 /**
  * Shows number of action points
@@ -17,15 +17,15 @@ class TURNBASEDRPGCOMBAT_API UActionPointsBarWidget : public UUserWidget
 {
 	GENERATED_BODY()
 public:
-	void Bind(UGameStat* InAPStat, UGameStat* InMaxAPStat);
+	void Bind(UGameStat* InAPStat);
 	void RemoveBinding();
 
 private:
 	UPROPERTY(meta = (BindWidget))
-	UProgressBar* ActionPointsBar;
+	UHorizontalBox* ActionPointsBar;
 
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* APText;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UActionPointWidget> ActionPointWidgetClass;
 
 	FDelegateHandle OnAPChangeHandle;
 	FDelegateHandle OnMaxAPChangeHandle;

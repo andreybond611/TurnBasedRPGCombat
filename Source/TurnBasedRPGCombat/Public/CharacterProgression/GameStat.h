@@ -93,7 +93,6 @@ private:
 	FText Name;
 
 	FDelegateHandle MaxValueStatChangedHandle;
-	void OnMaxValueStatChanged(float InMaxValue);
 
 	UPROPERTY()
 	UGameStat* MaxValueStat;

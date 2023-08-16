@@ -63,5 +63,5 @@ void UProgressBarBinding::OnMaxStatChanged(float Value)
 
 float UProgressBarBinding::GetStatPercent(float InCurrentStat, float InMaxStat) const
 {
-	return InMaxStat == 0.f ? 0.f : InCurrentStat / InMaxStat;
+	return InMaxStat == 0.f ? 0.f : InCurrentStat / InMaxStat; //-V550
 }

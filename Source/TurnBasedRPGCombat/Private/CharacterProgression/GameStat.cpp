@@ -44,7 +44,7 @@ void UGameStat::Add(float Value)
 		return;
 	}
 
-	if (Value != 0.f)
+	if (Value != 0.f) //-V550
 	{
 		float PreviousValue = ActualValue;
 
@@ -53,12 +53,12 @@ void UGameStat::Add(float Value)
 
 		ValueForEdit = ActualValue;
 
-		if (PreviousValue != ActualValue)
+		if (PreviousValue != ActualValue) //-V550
 		{
 			OnChange.Broadcast(ActualValue);
 			OnAddStat.Broadcast(Value);
 
-			if (ActualValue == MaxValue)
+			if (FMath::IsNearlyEqual(ActualValue, MaxValue))
 			{
 				OnReachMaxValue.Broadcast();
 			}
@@ -74,7 +74,7 @@ void UGameStat::Remove(float Value)
 		return;
 	}
 
-	if (Value != 0.f)
+	if (Value != 0.f) //-V550
 	{
 		float PreviousValue = ActualValue;
 
@@ -83,12 +83,12 @@ void UGameStat::Remove(float Value)
 
 		ValueForEdit = ActualValue;
 
-		if (PreviousValue != ActualValue)
+		if (PreviousValue != ActualValue) //-V550
 		{
 			OnChange.Broadcast(ActualValue);
 			OnRemoveStat.Broadcast(Value);
 
-			if (ActualValue == MinValue)
+			if (FMath::IsNearlyEqual(ActualValue, MinValue))
 			{
 				OnReachMinValue.Broadcast();
 			}
@@ -107,7 +107,7 @@ void UGameStat::AddMultiplier(float InMultiplier)
 void UGameStat::SetStatAsMaxValue(UGameStat* InMaxValueStat)
 {
 	MaxValueStat = InMaxValueStat;
-	MaxValueStatChangedHandle = MaxValueStat->OnChange.AddUObject(this, &UGameStat::OnMaxValueStatChanged);
+	MaxValueStatChangedHandle = MaxValueStat->OnChange.AddUObject(this, &UGameStat::SetMaxValue);
 	MaxValue = MaxValueStat->Get();
 	SetValue(Get());
 }
@@ -135,7 +135,3 @@ void UGameStat::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 }
 #endif
 
-void UGameStat::OnMaxValueStatChanged(float InMaxValue)
-{
-	MaxValue = InMaxValue;
-}

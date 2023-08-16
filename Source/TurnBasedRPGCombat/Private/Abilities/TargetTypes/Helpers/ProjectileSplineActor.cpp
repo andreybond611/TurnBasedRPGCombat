@@ -15,14 +15,17 @@ AProjectileSplineActor::AProjectileSplineActor()
 
 USplineMeshComponent* AProjectileSplineActor::AddSplineMeshComponent()
 {
-	USplineMeshComponent* SplineMeshComponent =
-		Cast<USplineMeshComponent>(AddComponentByClass(USplineMeshComponent::StaticClass(), true, FTransform{}, false));
+	if (USplineMeshComponent* SplineMeshComponent =
+			Cast<USplineMeshComponent>(AddComponentByClass(USplineMeshComponent::StaticClass(), true, FTransform{}, false)))
+	{
+		SplineMeshComponent->SetMobility(EComponentMobility::Movable);
+		SplineMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		SplineMeshComponent->AttachToComponent(SplineComponent, FAttachmentTransformRules::KeepRelativeTransform);
 
-	SplineMeshComponent->SetMobility(EComponentMobility::Movable);
-	SplineMeshComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SplineMeshComponent->AttachToComponent(SplineComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		return SplineMeshComponent;
+	}
 
-	return SplineMeshComponent;
+	return nullptr;
 }
 
 void AProjectileSplineActor::BeginPlay()

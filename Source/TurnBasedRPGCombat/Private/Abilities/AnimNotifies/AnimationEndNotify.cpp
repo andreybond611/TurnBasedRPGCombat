@@ -12,6 +12,9 @@ void UAnimationEndNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequence
 	if (auto* Character = Cast<ARPGCharacter>(MeshComp->GetOwner()))
 	{
 		UAbility* ExecutingAbility = Character->GetAbilityComponent()->GetAbilityAt(AbilityIndex);
-		ExecutingAbility->OnAnimationEnd.Broadcast();
+		if (ExecutingAbility)
+		{
+			ExecutingAbility->OnAnimationEnd.Broadcast();
+		}
 	}
 }

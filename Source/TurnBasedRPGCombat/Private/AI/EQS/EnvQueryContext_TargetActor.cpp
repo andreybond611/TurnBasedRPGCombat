@@ -14,8 +14,16 @@
 void UEnvQueryContext_TargetActor::ProvideContext(FEnvQueryInstance& QueryInstance, FEnvQueryContextData& ContextData) const
 {
 	ARPGCharacter* QueryOwner = Cast<ARPGCharacter>(QueryInstance.Owner.Get());
-	auto AIController = QueryOwner->GetController<ATurnBasedAIController>();
-	AActor* ContextCharacter = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject("TargetActor"));
+	if (!QueryOwner)
+	{
+		return;
+	}
 
-	UEnvQueryItemType_Actor::SetContextHelper(ContextData, ContextCharacter);
+	if (auto AIController = QueryOwner->GetController<ATurnBasedAIController>())
+	{
+		if (AActor* ContextCharacter = Cast<AActor>(AIController->GetBlackboardComponent()->GetValueAsObject("TargetActor")))
+		{
+			UEnvQueryItemType_Actor::SetContextHelper(ContextData, ContextCharacter);
+		}
+	}
 }

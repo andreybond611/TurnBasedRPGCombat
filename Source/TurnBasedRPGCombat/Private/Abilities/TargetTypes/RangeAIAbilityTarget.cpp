@@ -80,8 +80,8 @@ void URangeAIAbilityTarget::ChooseTargetActor()
 	Enemies.FilterByPredicate(
 		[this](const AActor* Key)
 		{
-			FRangeAttackLocations Location = *RangeAttackLocations.Find(Key);
-			return Location.GetDesirability() == FRangeAttackLocations::HighestDesirability;
+			FRangeAttackLocations Location = *RangeAttackLocations.Find(Key); //-V522
+			return Location.GetDesirability() == FRangeAttackLocations::HighestDesirability; //-V550
 		});
 
 	double ClosestOrFarthestDistance =
@@ -90,7 +90,7 @@ void URangeAIAbilityTarget::ChooseTargetActor()
 	AActor* ChosenTarget = nullptr;
 	for (AActor* Enemy : Enemies)
 	{
-		FRangeAttackLocations Location = *RangeAttackLocations.Find(Enemy);
+		FRangeAttackLocations Location = *RangeAttackLocations.Find(Enemy); //-V522
 		if (PreferredDistance == EPreferredDistance::Closest)
 		{
 			if (Location.PathToEnemyLength < ClosestOrFarthestDistance)
@@ -134,7 +134,7 @@ void URangeAIAbilityTarget::FindDesirabilityWithAPCost()
 
 	for (AActor* Enemy : Enemies)
 	{
-		FRangeAttackLocations Location = *RangeAttackLocations.Find(Enemy);
+		FRangeAttackLocations Location = *RangeAttackLocations.Find(Enemy); //-V522
 		if (!Location.bIsValid)
 		{
 			Location.SetDesirability(0.0);
@@ -170,7 +170,7 @@ void URangeAIAbilityTarget::FindDesirabilityWithAPCost()
 void URangeAIAbilityTarget::PathToLOSFound(uint32 QueryID, ENavigationQueryResult::Type Result,
 										   TSharedPtr<FNavigationPath, ESPMode::ThreadSafe> NavigationPath, AActor* Enemy)
 {
-	FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy);
+	FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy); //-V522
 	if (Result == ENavigationQueryResult::Success)
 	{
 		Locations.PathToLOSCost = NavigationPath->GetCost();
@@ -192,7 +192,7 @@ void URangeAIAbilityTarget::PathToLOSFound(uint32 QueryID, ENavigationQueryResul
 void URangeAIAbilityTarget::PathToEnemyFound(uint32 QueryID, ENavigationQueryResult::Type Result,
 											 TSharedPtr<FNavigationPath, ESPMode::ThreadSafe> NavigationPath, AActor* Enemy)
 {
-	FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy);
+	FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy); //-V522
 	if (Result == ENavigationQueryResult::Success)
 	{
 		Locations.PathToEnemyCost = NavigationPath->GetCost();
@@ -232,7 +232,7 @@ void URangeAIAbilityTarget::AllEQSFinished()
 
 	for (AActor* Enemy : Enemies)
 	{
-		FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy);
+		FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy); //-V522
 		if (Locations.bIsValid)
 		{
 			bValidLocations = true;

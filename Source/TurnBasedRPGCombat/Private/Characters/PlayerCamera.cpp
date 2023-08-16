@@ -56,7 +56,11 @@ void APlayerCamera::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetController()->SetControlRotation(FRotator(-50.f, 0.f, 0.f));
+	AController* Controller = GetController();
+	if (Controller)
+	{
+		Controller->SetControlRotation(FRotator(-50.f, 0.f, 0.f));
+	}
 }
 
 void APlayerCamera::InterpCameraVerticalMove(float DeltaSeconds, float TargetGroundDistance)
@@ -91,7 +95,11 @@ void APlayerCamera::Rotate(float DeltaSeconds)
 
 	float NewYawRotation = FMath::FInterpTo(GetControlRotation().Yaw, GetControlRotation().Yaw + YawInputValue, DeltaSeconds, YawRotationSpeed);
 
-	GetController()->SetControlRotation(FRotator(NewPitchRotation, NewYawRotation, 0));
+	AController* Controller = GetController();
+	if (Controller)
+	{
+		Controller->SetControlRotation(FRotator(NewPitchRotation, NewYawRotation, 0));
+	}
 	CameraRootComponent->SetWorldRotation(FRotator(CameraRootComponent->GetComponentRotation().Pitch, NewYawRotation, 0));
 }
 
@@ -142,12 +150,20 @@ void APlayerCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	APlayerController* PC = Cast<APlayerController>(GetController());
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (!PlayerController)
+	{
+		return;
+	}
 
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PC->GetLocalPlayer());
+	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 	Subsystem->AddMappingContext(PlayerCameraMappingContext, 0);
 
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	if (!EnhancedInputComponent)
+	{
+		return;
+	}
 
 	/* Input Bindings */
 
@@ -166,7 +182,7 @@ void APlayerCamera::StopRotatingYaw()
 
 void APlayerCamera::CameraMoveVertical(const FInputActionValue& InputActionValue)
 {
-	if (Controller != nullptr)
+	if (Controller)
 	{
 		const float InputValue = InputActionValue.Get<float>();
 
@@ -179,35 +195,40 @@ void APlayerCamera::CameraMoveVertical(const FInputActionValue& InputActionValue
 	}
 }
 
+void APlayerCamera::DisableFollowWhenMoved()
+{
+	if (FollowTarget)
+	{
+		MovementInputSeconds += GetWorld()->GetDeltaSeconds();
+		if (MovementInputSeconds > DisableFollowTimeSeconds)
+		{
+			StopFollowing();
+		}
+	}
+}
+
 void APlayerCamera::CameraMoveOrthogonal(const FInputActionValue& InputActionValue)
 {
-	if (Controller != nullptr)
+	if (Controller)
 	{
 		const FVector2D MoveValue = InputActionValue.Get<FVector2D>();
 		const FRotator MovementRotation(0, GetActorRotation().Yaw, 0);
 
-		if (MoveValue.Y != 0.f)
+		if (FMath::IsNearlyZero(MoveValue.Y))
 		{
 			const FVector Direction = MovementRotation.RotateVector(FVector::ForwardVector);
 
 			AddMovementInput(Direction, MoveValue.Y);
 		}
 
-		if (MoveValue.X != 0.f)
+		if (FMath::IsNearlyZero(MoveValue.X))
 		{
 			const FVector Direction = MovementRotation.RotateVector(FVector::RightVector);
 
 			AddMovementInput(Direction, MoveValue.X);
 		}
 
-		if (FollowTarget)
-		{
-			MovementInputSeconds += GetWorld()->GetDeltaSeconds();
-			if (MovementInputSeconds > DisableFollowTimeSeconds)
-			{
-				StopFollowing();
-			}
-		}
+		DisableFollowWhenMoved();
 	}
 }
 

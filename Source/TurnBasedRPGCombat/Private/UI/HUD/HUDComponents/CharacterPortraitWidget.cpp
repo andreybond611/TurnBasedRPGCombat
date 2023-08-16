@@ -15,6 +15,11 @@ void UCharacterPortraitWidget::Init(TScriptInterface<ITBBattleParticipant> Comba
 	Image->SetBrushFromTexture(Combatant->GetPortrait());
 
 	Health = Combatant->Stats()->FindStat(SN_Health);
+	if (!Health)
+	{
+		return;
+	}
+
 	Health->OnChange.AddUObject(this, &UCharacterPortraitWidget::OnHealthChange);
 	OnHealthChange(Health->Get());
 }

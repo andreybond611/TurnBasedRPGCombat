@@ -23,7 +23,10 @@ void URangeTarget::StartTargeting(ARPGPlayerController* InPlayerController)
 		MoveTarget = Cast<UMoveTarget>(AbilityComponent->GetMoveAbility()->GetTargetState());
 	}
 
-	MoveTarget->StartTargeting(InPlayerController);
+	if (ensure(MoveTarget))
+	{
+		MoveTarget->StartTargeting(InPlayerController);
+	}
 }
 
 void URangeTarget::TickTargetAbility(const FHitResult& CursorHitResult)

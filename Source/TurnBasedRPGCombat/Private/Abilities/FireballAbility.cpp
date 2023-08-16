@@ -1,6 +1,5 @@
 // Copyright 2022 - 2023 Andrei Bondarenko. All rights reserved
 
-
 #include "Abilities/FireballAbility.h"
 
 #include "NiagaraComponent.h"
@@ -39,8 +38,8 @@ void UFireballAbility::ShootFireball()
 	USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	ShotProjectile =
-		GetWorld()->SpawnActor<AProjectileActor>(*ProjectileClass, ProjectileStart->GetComponentLocation(), ProjectileStart->GetComponentRotation(), Params);
+	ShotProjectile = GetWorld()->SpawnActor<AProjectileActor>(*ProjectileClass, ProjectileStart->GetComponentLocation(),
+															  ProjectileStart->GetComponentRotation(), Params);
 
 	if (ensure(ShotProjectile))
 	{
@@ -63,20 +62,24 @@ void UFireballAbility::ProcessHits(FVector Location, const TArray<FHitResult>& O
 
 	for (auto HitActor : HitActors)
 	{
-		float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
-		EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Location, HitActor);
+		if (auto DamageableActor = Cast<IDamageable>(HitActor))
+		{
+			float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
+			EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Location, HitActor);
 
-		FDamage Damage;
-		Damage.DamageNumber = DamageNumber;
-		Damage.HitDirection = HitDirection;
-		Damage.DamageType = EDamageType::Fire;
+			FDamage Damage;
+			Damage.DamageNumber = DamageNumber;
+			Damage.HitDirection = HitDirection;
+			Damage.DamageType = EDamageType::Fire;
 
-		auto DamageableActor = Cast<IDamageable>(HitActor);
-		DamageableActor->GetDamaged(Damage);
+			DamageableActor->GetDamaged(Damage);
+		}
 
-		UOnFireEffect* Effect = NewObject<UOnFireEffect>(this, *AppliedEffectClass);
-		auto EffectComponent = HitActor->FindComponentByClass<UEffectComponent>();
-		EffectComponent->AddEffect(Effect);
+		if (auto EffectComponent = HitActor->FindComponentByClass<UEffectComponent>())
+		{
+			UOnFireEffect* Effect = NewObject<UOnFireEffect>(this, *AppliedEffectClass);
+			EffectComponent->AddEffect(Effect);
+		}
 	}
 }
 
@@ -97,8 +100,8 @@ void UFireballAbility::FireballHit(AActor* HitActor, FVector Location)
 
 	TArray<AActor*> ActorsToIgnore;
 
-	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(this, Location, Location, Radius, ObjectTypes, false,
-																 ActorsToIgnore, EDrawDebugTrace::None, OutHitResults, true);
+	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(this, Location, Location, Radius, ObjectTypes, false, ActorsToIgnore,
+																 EDrawDebugTrace::None, OutHitResults, true);
 
 	if (bHit)
 	{
