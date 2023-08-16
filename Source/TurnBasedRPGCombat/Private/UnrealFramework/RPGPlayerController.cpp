@@ -9,6 +9,7 @@
 #include "Abilities/TargetTypes/AbilityTargetState.h"
 #include "ActorComponents/TurnBasedComponent.h"
 #include "Blueprint/SlateBlueprintLibrary.h"
+#include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
 #include "Components/DecalComponent.h"
 #include "Input/AbilityInputConfigData.h"
@@ -16,6 +17,7 @@
 #include "UI/HUD/HUDWidget.h"
 #include "UI/TargetInfoWidget.h"
 #include "UI/UITypes.h"
+#include "UI/HUD/HUDComponents/ActionPointsBarWidget.h"
 #include "UnrealFramework/RPGPlayerState.h"
 
 DECLARE_CYCLE_STAT(TEXT("TargetAbility"), STAT_TargetAbility, STATGROUP_TargetAbility);
@@ -81,8 +83,22 @@ void ARPGPlayerController::AddTargetInfoSectionAccuracy(float Accuracy)
 
 void ARPGPlayerController::AddTargetInfoSectionAPCost(float APCost)
 {
-	FText APCostText = FText::Format(NSLOCTEXT("UI", "ActionPointCost", "{0}AP"), FText::AsNumber(APCost));
-	AddTargetInfoSection(APCostText, 1);
+	float CurrentAP = GetControlledCharacter()->Stats()->Get(SN_ActionPoints);
+	if (APCost > CurrentAP)
+	{
+		AddTargetInfoSection(NSLOCTEXT("UI", "NotEnoughAP", "Not enough action points"), 0);
+	}
+	else
+	{
+		FText APCostText = FText::Format(NSLOCTEXT("UI", "ActionPointCost", "{0}AP"), FText::AsNumber(APCost));
+		AddTargetInfoSection(APCostText, 1);
+	}
+
+	UActionPointsBarWidget* APBar = HUDWidget->GetAPBar();
+	if (APBar)
+	{
+		APBar->SetSpendingIndication(FMath::RoundToInt(APCost));
+	}
 }
 
 void ARPGPlayerController::AddTargetInfoSectionDistance(float PathDistance)

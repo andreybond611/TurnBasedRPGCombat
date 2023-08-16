@@ -2,13 +2,13 @@
 
 
 #include "UI/HUD/HUDComponents/ActionPointWidget.h"
-
 #include "Components/Image.h"
 
 void UActionPointWidget::SetIcon(EAPIcon InIcon)
 {
 	UTexture2D* Texture = GetTextureFromAPIcon(InIcon);
 	IconImage->SetBrushFromTexture(Texture);
+	Icon = InIcon;
 }
 
 void UActionPointWidget::NativeOnInitialized()

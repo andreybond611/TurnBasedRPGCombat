@@ -28,6 +28,7 @@ public:
 	void UndisplayCharacter(ARPGCharacter* Previous);
 
 	void SetMouseOverCharacter(ARPGCharacter* Character) { MouseOverCharacter = Character; }
+	UActionPointsBarWidget* GetAPBar() const { return ActionPointsBar; }
 
 protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;

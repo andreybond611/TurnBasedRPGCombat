@@ -20,6 +20,11 @@ public:
 	void Bind(UGameStat* InAPStat);
 	void RemoveBinding();
 
+	/** Shows to player how much AP gonna be spent on an action */
+	void SetSpendingIndication(int32 APCount);
+
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 private:
 	UPROPERTY(meta = (BindWidget))
 	UHorizontalBox* ActionPointsBar;
@@ -34,6 +39,10 @@ private:
 	UGameStat* APStat;
 	UPROPERTY()
 	UGameStat* MaxAPStat;
+
+	bool bSpendingIndication = false;
+	UPROPERTY()
+	TArray<UActionPointWidget*> ActionPointWidgets;
 
 	void OnMaxAPChange(float MaxAPValue);
 	void OnAPChange(float APValue);

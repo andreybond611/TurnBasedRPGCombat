@@ -56,10 +56,10 @@ void APlayerCamera::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AController* Controller = GetController();
-	if (Controller)
+	AController* OwnController = GetController();
+	if (OwnController)
 	{
-		Controller->SetControlRotation(FRotator(-50.f, 0.f, 0.f));
+		OwnController->SetControlRotation(FRotator(-50.f, 0.f, 0.f));
 	}
 }
 
@@ -95,10 +95,10 @@ void APlayerCamera::Rotate(float DeltaSeconds)
 
 	float NewYawRotation = FMath::FInterpTo(GetControlRotation().Yaw, GetControlRotation().Yaw + YawInputValue, DeltaSeconds, YawRotationSpeed);
 
-	AController* Controller = GetController();
-	if (Controller)
+	AController* OwnController = GetController();
+	if (OwnController)
 	{
-		Controller->SetControlRotation(FRotator(NewPitchRotation, NewYawRotation, 0));
+		OwnController->SetControlRotation(FRotator(NewPitchRotation, NewYawRotation, 0));
 	}
 	CameraRootComponent->SetWorldRotation(FRotator(CameraRootComponent->GetComponentRotation().Pitch, NewYawRotation, 0));
 }
@@ -214,14 +214,14 @@ void APlayerCamera::CameraMoveOrthogonal(const FInputActionValue& InputActionVal
 		const FVector2D MoveValue = InputActionValue.Get<FVector2D>();
 		const FRotator MovementRotation(0, GetActorRotation().Yaw, 0);
 
-		if (FMath::IsNearlyZero(MoveValue.Y))
+		if (!FMath::IsNearlyZero(MoveValue.Y))
 		{
 			const FVector Direction = MovementRotation.RotateVector(FVector::ForwardVector);
 
 			AddMovementInput(Direction, MoveValue.Y);
 		}
 
-		if (FMath::IsNearlyZero(MoveValue.X))
+		if (!FMath::IsNearlyZero(MoveValue.X))
 		{
 			const FVector Direction = MovementRotation.RotateVector(FVector::RightVector);
 
