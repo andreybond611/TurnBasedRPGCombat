@@ -3,6 +3,8 @@
 #include "Abilities/Effects/EffectComponent.h"
 #include "Characters/RPGCharacter.h"
 #include "Abilities/Effects/Effect.h"
+#include "Abilities/Effects/ConstantEffects/ConstantEffectMap.h"
+#include "Utility/TurnBasedUtility.h"
 
 UEffectComponent::UEffectComponent()
 {
@@ -11,13 +13,14 @@ UEffectComponent::UEffectComponent()
 
 UEffect* UEffectComponent::FindSameClassEffect(UEffect* Effect)
 {
+	Effects.Remove(nullptr);
 	UEffect** SameClassEffect = Effects.FindByPredicate([Effect](UEffect* SearchedEffect) { return SearchedEffect->IsA(Effect->GetClass()); });
 	return SameClassEffect ? *SameClassEffect : nullptr;
 }
 
 void UEffectComponent::AddEffect(UEffect* Effect)
 {
-	if (Effect->CanApplyTo(Character))
+	if (Effect->CanApplyTo(GetOwner()))
 	{
 		UEffect* SameClassEffect = FindSameClassEffect(Effect);
 		if (SameClassEffect)
@@ -26,8 +29,8 @@ void UEffectComponent::AddEffect(UEffect* Effect)
 		}
 		else
 		{
-			Effect->TargetActor = Character;
-			Effect->ApplyTo(Character);
+			Effect->TargetActor = GetOwner();
+			Effect->ApplyTo(GetOwner());
 			Effect->ApplyVisuals();
 			Effects.Add(Effect);
 		}
@@ -93,9 +96,51 @@ bool UEffectComponent::HasEffect(TSubclassOf<UEffect> Class)
 	return false;
 }
 
+void UEffectComponent::AddConstantEffects()
+{
+	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(GetOwner()))
+	{
+		FGameplayTagContainer TagContainer;
+		GameplayTagHolder->GetOwnedGameplayTags(TagContainer);
+
+		auto EffectMap = GetDefault<UConstantEffectMap>(ConstantEffectMap);
+
+		for (FGameplayTag Tag : TagContainer)
+		{
+			if (EffectMap->ConstantEffectClasses.Contains(Tag))
+			{
+				TSubclassOf<UEffect> EffectClass = EffectMap->ConstantEffectClasses[Tag];
+				auto NewConstantEffect = NewObject<UEffect>(this, EffectClass);
+				if (ensure(NewConstantEffect))
+				{
+					AddEffect(NewConstantEffect);
+				}
+			}
+		}
+	}
+}
+
 void UEffectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Character = Cast<ARPGCharacter>(GetOwner());
+}
+
+void UEffectComponent::PostInitProperties()
+{
+	Super::PostInitProperties();
+
+}
+
+void UEffectComponent::OnRegister()
+{
+	Super::OnRegister();
+
+	FString Flags = UTurnBasedUtility::ObjectFlagToString(GetFlags());
+	UE_LOG(LogTemp, Warning, TEXT("Name: %s, Flags: %s"), *GetName(), *Flags);
+
+	if (!HasAllFlags(RF_ClassDefaultObject | RF_AllocatedInSharedPage))
+	{
+		AddConstantEffects();
+	}
 }

@@ -31,7 +31,8 @@ float UStatsComponent::Get(FName StatName)
 {
 	if (Stats.Contains(StatName))
 	{
-		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName()) return Stats[StatName]->Get();
+		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName());
+		return Stats[StatName]->Get();
 	}
 	return 0.f;
 }
@@ -40,7 +41,17 @@ void UStatsComponent::Set(FName StatName, float Value)
 {
 	if (Stats.Contains(StatName))
 	{
-		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName()) Stats[StatName]->SetValue(Value);
+		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName());
+		Stats[StatName]->SetValue(Value);
+	}
+}
+
+void UStatsComponent::SetConstant(FName StatName, float Value)
+{
+	if (Stats.Contains(StatName))
+	{
+		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName());
+		Stats[StatName]->SetConstant(Value);
 	}
 }
 
@@ -48,7 +59,8 @@ void UStatsComponent::Add(FName StatName, float Value)
 {
 	if (Stats.Contains(StatName))
 	{
-		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName()) Stats[StatName]->Add(Value);
+		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName());
+		Stats[StatName]->Add(Value);
 	}
 }
 
@@ -56,7 +68,8 @@ void UStatsComponent::Remove(FName StatName, float Value)
 {
 	if (Stats.Contains(StatName))
 	{
-		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName()) Stats[StatName]->Remove(Value);
+		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName());
+		Stats[StatName]->Remove(Value);
 	}
 }
 
@@ -71,8 +84,8 @@ void UStatsComponent::AddMultiplier(FName StatName, float Multiplier)
 {
 	if (Stats.Contains(StatName))
 	{
-		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName()) Stats[StatName]->AddMultiplier(
-			Multiplier);
+		checkf(Stats[StatName], TEXT("Stat %s is not set. Owner: %s"), *StatName.ToString(), *GetOwner()->GetName());
+		Stats[StatName]->AddMultiplier(Multiplier);
 	}
 }
 

@@ -8,10 +8,11 @@
 #include "EffectComponent.generated.h"
 
 class UEffect;
+class UConstantEffectMap;
 /**
  * Applies and removes UEffects
  */
-UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
+UCLASS(Blueprintable, ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TURNBASEDRPGCOMBAT_API UEffectComponent : public UActorComponent
 {
 	GENERATED_BODY()
@@ -38,6 +39,10 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void PostInitProperties() override;
+	virtual void OnRegister() override;
+
+	void AddConstantEffects();
 
 private:
 	/** Applied effects */
@@ -47,6 +52,9 @@ private:
 	/** Owner character */
 	UPROPERTY()
 	ARPGCharacter* Character;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UConstantEffectMap> ConstantEffectMap;
 
 	UEffect* FindSameClassEffect(UEffect* Effect);
 };

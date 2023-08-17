@@ -15,17 +15,30 @@ UGameStat::UGameStat()
 
 void UGameStat::SetValue(float InValue)
 {
-	ActualValue = FMath::Clamp(InValue, MinValue, MaxValue);
-	OverflowValue = ActualValue;
+	if (!bIsConstant)
+	{
+		ActualValue = FMath::Clamp(InValue, MinValue, MaxValue);
+		OverflowValue = ActualValue;
 
-	ValueForEdit = ActualValue;
+		ValueForEdit = ActualValue;
 
-	OnChange.Broadcast(ActualValue);
+		OnChange.Broadcast(ActualValue);
+	}
+}
+
+void UGameStat::SetConstant(float InValue)
+{
+	if (bIsConstant)
+	{
+		bIsConstant = false;
+	}
+	SetValue(InValue);
+	bIsConstant = true;
 }
 
 UGameStat* UGameStat::Create(float InInitialValue, FText InName, float InMinValue, float InMaxValue)
 {
-	// todo: pass fname here
+	// todo: pass FName instead of converting FText
 	FName StatName = MakeUniqueObjectName(GetTransientPackage(), StaticClass(), FName(InName.ToString()));
 
 	UGameStat* NewStat = NewObject<UGameStat>(GetTransientPackage(), StatName);
@@ -44,7 +57,7 @@ void UGameStat::Add(float Value)
 		return;
 	}
 
-	if (Value != 0.f) //-V550
+	if (Value != 0.f && !bIsConstant) //-V550
 	{
 		float PreviousValue = ActualValue;
 
@@ -74,7 +87,7 @@ void UGameStat::Remove(float Value)
 		return;
 	}
 
-	if (Value != 0.f) //-V550
+	if (Value != 0.f && !bIsConstant) //-V550
 	{
 		float PreviousValue = ActualValue;
 

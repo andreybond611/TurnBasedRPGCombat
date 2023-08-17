@@ -29,6 +29,7 @@ public:
 	float Get() const { return ActualValue; }
 
 	void SetValue(float InValue);
+	void SetConstant(float InValue);
 
 	UFUNCTION(BlueprintCallable)
 	void Add(float Value);
@@ -88,6 +89,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	float Multiplier = 1.f;
 	float PreviousMultiplier;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsConstant = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FText Name;

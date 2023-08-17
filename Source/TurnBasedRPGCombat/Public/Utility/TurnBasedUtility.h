@@ -30,4 +30,6 @@ public:
 	static TArray<FVector> FindPointsAlongPath(UNavigationPath* NavigationPath, float DistanceBetweenPoints);
 
 	static FName DamageTypeToResistanceStat(EDamageType DamageType);
+
+	static FString ObjectFlagToString(EObjectFlags ObjectFlags);
 };

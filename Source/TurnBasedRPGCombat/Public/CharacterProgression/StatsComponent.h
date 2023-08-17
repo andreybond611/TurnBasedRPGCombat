@@ -31,6 +31,9 @@ public:
 	void Set(FName StatName, float Value);
 
 	UFUNCTION(BlueprintCallable)
+	void SetConstant(FName StatName, float Value);
+
+	UFUNCTION(BlueprintCallable)
 	void Add(FName StatName, float Value);
 
 	UFUNCTION(BlueprintCallable)
