@@ -2,11 +2,9 @@
 
 #include "Abilities/FireballAbility.h"
 
-#include "NiagaraComponent.h"
 #include "Abilities/Effects/EffectComponent.h"
 #include "Abilities/Effects/OnFireEffect.h"
 #include "Abilities/Projectiles/ProjectileActor.h"
-#include "Abilities/TargetTypes/ProjectileRadiusTarget.h"
 #include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -22,7 +20,7 @@ void UFireballAbility::StartAbility()
 
 FVector UFireballAbility::GetProjectileVelocity()
 {
-	USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
+	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(Owner);
 	FVector OutTossVelocity;
@@ -35,7 +33,7 @@ FVector UFireballAbility::GetProjectileVelocity()
 
 void UFireballAbility::ShootFireball()
 {
-	USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
+	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	ShotProjectile = GetWorld()->SpawnActor<AProjectileActor>(*ProjectileClass, ProjectileStart->GetComponentLocation(),
@@ -43,7 +41,7 @@ void UFireballAbility::ShootFireball()
 
 	if (ensure(ShotProjectile))
 	{
-		FVector ProjectileVelocity = GetProjectileVelocity();
+		const FVector ProjectileVelocity = GetProjectileVelocity();
 		ShotProjectile->GetProjectileMovement()->Velocity = ProjectileVelocity;
 		ShotProjectile->SetProjectileOwner(Owner);
 		ShotProjectile->OnProjectileHitDelegate.BindUObject(this, &UFireballAbility::FireballHit);
@@ -60,12 +58,12 @@ void UFireballAbility::ProcessHits(FVector Location, const TArray<FHitResult>& O
 		}
 	}
 
-	for (auto HitActor : HitActors)
+	for (const auto HitActor : HitActors)
 	{
-		if (auto DamageableActor = Cast<IDamageable>(HitActor))
+		if (const auto DamageableActor = Cast<IDamageable>(HitActor))
 		{
-			float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
-			EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Location, HitActor);
+			const float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
+			const EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Location, HitActor);
 
 			FDamage Damage;
 			Damage.DamageNumber = DamageNumber;
@@ -75,7 +73,7 @@ void UFireballAbility::ProcessHits(FVector Location, const TArray<FHitResult>& O
 			DamageableActor->GetDamaged(Damage);
 		}
 
-		if (auto EffectComponent = HitActor->FindComponentByClass<UEffectComponent>())
+		if (const auto EffectComponent = HitActor->FindComponentByClass<UEffectComponent>())
 		{
 			UOnFireEffect* Effect = NewObject<UOnFireEffect>(this, *AppliedEffectClass);
 			EffectComponent->AddEffect(Effect);
@@ -89,7 +87,7 @@ void UFireballAbility::FireballHit(AActor* HitActor, FVector Location)
 
 	FTransform SurfaceTransform;
 	SurfaceTransform.SetLocation(Location);
-	auto FireSurface = GetWorld()->SpawnActorDeferred<ARPGSurface>(*FireSurfaceActorClass, SurfaceTransform);
+	const auto FireSurface = GetWorld()->SpawnActorDeferred<ARPGSurface>(*FireSurfaceActorClass, SurfaceTransform);
 	FireSurface->SetSurfaceSize(Radius);
 	FireSurface->SetSurfaceType(SurfaceType);
 	UGameplayStatics::FinishSpawningActor(FireSurface, SurfaceTransform);
@@ -98,10 +96,10 @@ void UFireballAbility::FireballHit(AActor* HitActor, FVector Location)
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 	TArray<FHitResult> OutHitResults;
 
-	TArray<AActor*> ActorsToIgnore;
+	const TArray<AActor*> ActorsToIgnore;
 
-	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(this, Location, Location, Radius, ObjectTypes, false, ActorsToIgnore,
-																 EDrawDebugTrace::None, OutHitResults, true);
+	const bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(this, Location, Location, Radius, ObjectTypes, false, ActorsToIgnore,
+	                                                                   EDrawDebugTrace::None, OutHitResults, true);
 
 	if (bHit)
 	{

@@ -9,7 +9,7 @@
 #include "TurnBased/TurnBasedBattle.h"
 #include "UI/HUD/HUDComponents/CharacterPortraitWidget.h"
 
-void UTurnSequenceWidget::AddPortrait(TScriptInterface<ITBBattleParticipant> Combatant)
+void UTurnSequenceWidget::AddPortrait(const TScriptInterface<ITBBattleParticipant> Combatant)
 {
 	auto* CharacterPortrait = CreateWidget<UCharacterPortraitWidget>(this, *PortraitWidgetClass);
 	CharacterPortrait->Init(Combatant);
@@ -33,8 +33,8 @@ void UTurnSequenceWidget::AddSpacer()
 
 void UTurnSequenceWidget::FillPortraits()
 {
-	TArray<TScriptInterface<ITBBattleParticipant>> CurrentTurnQueue = BoundBattle->GetCurrentTurnQueue();
-	TArray<TScriptInterface<ITBBattleParticipant>> NextTurnQueue = BoundBattle->GetNextTurnQueue();
+	const TArray<TScriptInterface<ITBBattleParticipant>> CurrentTurnQueue = BoundBattle->GetCurrentTurnQueue();
+	const TArray<TScriptInterface<ITBBattleParticipant>> NextTurnQueue = BoundBattle->GetNextTurnQueue();
 
 	Portraits->ClearChildren();
 
@@ -74,7 +74,7 @@ UCharacterPortraitWidget* UTurnSequenceWidget::GetFirstPortrait()
 	return nullptr;
 }
 
-void UTurnSequenceWidget::OnNextCombatant(TScriptInterface<ITBBattleParticipant> Combatant)
+void UTurnSequenceWidget::OnNextCombatant(const TScriptInterface<ITBBattleParticipant> Combatant)
 {
 	if (NextParticipant != nullptr)
 	{

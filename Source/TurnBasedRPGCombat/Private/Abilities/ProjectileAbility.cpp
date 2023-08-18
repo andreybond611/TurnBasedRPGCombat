@@ -4,19 +4,17 @@
 
 #include "Abilities/AbilityComponent.h"
 #include "Abilities/Projectiles/ProjectileActor.h"
-#include "Abilities/TargetTypes/RangeTarget.h"
 #include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "UnrealFramework/RPGPlayerController.h"
 #include "Utility/TurnBasedUtility.h"
 
 void UProjectileAbility::AddToCharacter(ARPGCharacter* Character)
 {
 	Super::AddToCharacter(Character);
 
-	UAbilityComponent* AbilityComponent = Character->GetAbilityComponent();
+	const UAbilityComponent* AbilityComponent = Character->GetAbilityComponent();
 	MoveAbility = AbilityComponent->GetMoveAbility();
 }
 
@@ -40,9 +38,9 @@ void UProjectileAbility::StartAbility()
 
 void UProjectileAbility::ProjectileHit(AActor* HitActor, FVector ProjectileLocation)
 {
-	if (auto Damageable = Cast<IDamageable>(HitActor))
+	if (const auto Damageable = Cast<IDamageable>(HitActor))
 	{
-		EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(ProjectileLocation, HitActor);
+		const EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(ProjectileLocation, HitActor);
 
 		FDamage Damage;
 		Damage.DamageNumber = Owner->Stats()->Get(SN_Damage);
@@ -56,7 +54,7 @@ void UProjectileAbility::ProjectileHit(AActor* HitActor, FVector ProjectileLocat
 
 void UProjectileAbility::ProjectileSpawn()
 {
-	USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
+	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 
 	FTransform Transform;
 	Transform.SetLocation(ProjectileStart->GetComponentLocation());

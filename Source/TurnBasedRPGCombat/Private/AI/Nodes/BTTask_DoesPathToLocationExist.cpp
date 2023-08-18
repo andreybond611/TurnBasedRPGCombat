@@ -8,16 +8,16 @@
 
 EBTNodeResult::Type UBTTask_DoesPathToLocationExist::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	auto AIController = OwnerComp.GetOwner<AAIController>();
-	if (auto Pawn = AIController->GetPawn())
+	const auto AIController = OwnerComp.GetOwner<AAIController>();
+	if (const auto Pawn = AIController->GetPawn())
 	{
-		FVector PathStart = Pawn->GetActorLocation();
-		FVector PathEnd = OwnerComp.GetBlackboardComponent()->GetValueAsVector(Location.SelectedKeyName);
+		const FVector PathStart = Pawn->GetActorLocation();
+		const FVector PathEnd = OwnerComp.GetBlackboardComponent()->GetValueAsVector(Location.SelectedKeyName);
 
-		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(Pawn);
-		FPathFindingQuery Query{Pawn, *NavSystem->GetAbstractNavData(), PathStart, PathEnd};
+		const UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(Pawn);
+		const FPathFindingQuery Query{Pawn, *NavSystem->GetAbstractNavData(), PathStart, PathEnd};
 
-		bool bPathExists = NavSystem->TestPathSync(Query);
+		const bool bPathExists = NavSystem->TestPathSync(Query);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(Result.SelectedKeyName, bPathExists);
 	}
 	return EBTNodeResult::Succeeded;

@@ -7,7 +7,7 @@
 
 bool UAbilityTargetBase::IsDetected(AActor* Actor)
 {
-	if (auto TeamAgentInterface = Cast<IGenericTeamAgentInterface>(Actor))
+	if (const auto TeamAgentInterface = Cast<IGenericTeamAgentInterface>(Actor))
 	{
 		bool bIsEnemy = false;
 		bool bIsNeutral = false;

@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Characters/Animations/RPGAnimInstance.h"
 #include "UObject/Object.h"
 #include "Utility/TurnBasedTypes.h"
 #include "Ability.generated.h"

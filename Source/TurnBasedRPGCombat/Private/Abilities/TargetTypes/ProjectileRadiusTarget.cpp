@@ -20,8 +20,8 @@ void UProjectileRadiusTarget::StartTargeting(ARPGPlayerController* InPlayerContr
 
 void UProjectileRadiusTarget::SetSphereRadius()
 {
-	float SphereRadius = SpawnedAOESphere->GetSphereCollision()->GetUnscaledSphereRadius();
-	float Scale = AOESphereRadius / SphereRadius;
+	const float SphereRadius = SpawnedAOESphere->GetSphereCollision()->GetUnscaledSphereRadius();
+	const float Scale = AOESphereRadius / SphereRadius;
 	SphereScale = SpawnedAOESphere->GetActorScale3D();
 	SphereScale.X = Scale;
 	SphereScale.Y = Scale;
@@ -89,7 +89,7 @@ void UProjectileRadiusTarget::TickTargetAbility(const FHitResult& CursorHitResul
 			SetSphereRadius();
 
 			TArray<FHitResult> OutHitResults;
-			bool bHit = SphereTraceInLocation(AOESphereLocation, OutHitResults);
+			const bool bHit = SphereTraceInLocation(AOESphereLocation, OutHitResults);
 			if (bHit)
 			{
 				DetectTargets(OutHitResults);

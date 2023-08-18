@@ -6,7 +6,7 @@
 #include "Animation/UMGSequencePlayer.h"
 #include "Components/TextBlock.h"
 
-void UFloatingNumberWidget::Init(int32 Number, FColor Color)
+void UFloatingNumberWidget::Init(const int32 Number, const FColor Color)
 {
 	NumberText->SetText(FText::AsNumber(Number));
 	NumberText->SetColorAndOpacity(Color);
@@ -15,7 +15,7 @@ void UFloatingNumberWidget::Init(int32 Number, FColor Color)
 	SequencePlayer->OnSequenceFinishedPlaying().AddLambda([this](UUMGSequencePlayer&) { RemoveFromParent(); });
 }
 
-void UFloatingNumberWidget::Init(const FText& Message, FColor Color)
+void UFloatingNumberWidget::Init(const FText& Message, const FColor Color)
 {
 	NumberText->SetText(Message);
 	NumberText->SetColorAndOpacity(Color);

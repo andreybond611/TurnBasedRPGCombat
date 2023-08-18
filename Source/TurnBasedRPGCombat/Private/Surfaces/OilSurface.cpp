@@ -9,9 +9,9 @@
 
 void UOilSurface::OnActorEntered(AActor* Actor)
 {
-	if (auto EffectComponent = Actor->FindComponentByClass<UEffectComponent>())
+	if (const auto EffectComponent = Actor->FindComponentByClass<UEffectComponent>())
 	{
-		auto Effect = NewObject<UEffect>(this, *SurfaceEffectClass);
+		const auto Effect = NewObject<UEffect>(this, *SurfaceEffectClass);
 		EffectComponent->AddEffect(Effect);
 	}
 }
@@ -25,7 +25,7 @@ void UOilSurface::OnSurfaceIntersect(ARPGSurface* OtherSurface)
 {
 	if (OtherSurface->GetSurface()->IsA(UFireSurface::StaticClass()))
 	{
-		auto SurfaceType = OtherSurface->GetSurfaceType();
+		const auto SurfaceType = OtherSurface->GetSurfaceType();
 		ChangeSurfaceType(SurfaceType);
 	}
 }

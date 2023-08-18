@@ -2,16 +2,14 @@
 
 #include "Abilities/WhirlwindAbility.h"
 
-#include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
-#include "NiagaraSystem.h"
 #include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
 #include "Utility/TurnBasedUtility.h"
 
 void UWhirlwindAbility::StartAbility()
 {
-	float AnimationLength = Owner->PlayAnimMontage(AbilityMontage);
+	const float AnimationLength = Owner->PlayAnimMontage(AbilityMontage);
 
 	FTimerHandle AnimationEndHandle;
 	GetWorld()->GetTimerManager().SetTimer(AnimationEndHandle, this, &UWhirlwindAbility::EndAbility, AnimationLength);
@@ -40,10 +38,10 @@ void UWhirlwindAbility::HitEveryoneAround()
 	{
 		UNiagaraFunctionLibrary::SpawnSystemAtLocation(Actor, Impact, Actor->GetActorLocation(), Actor->GetActorRotation());
 
-		if (auto Damageable = Cast<IDamageable>(Actor))
+		if (const auto Damageable = Cast<IDamageable>(Actor))
 		{
-			float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
-			EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Owner, Actor);
+			const float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
+			const EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Owner, Actor);
 
 			FDamage Damage;
 			Damage.DamageNumber = DamageNumber;

@@ -16,13 +16,13 @@
 #include "UnrealFramework/RPGPlayerController.h"
 #include "Utility/TurnBasedUtility.h"
 #include "NiagaraComponent.h"
-#include "Abilities/Ability.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Abilities/Effects/EffectComponent.h"
 #include "ActorComponents/RPGMovementComponent.h"
 #include "CharacterProgression/GameStat.h"
 #include "Characters/PlayerCamera.h"
+#include "Characters/Animations/RPGAnimInstance.h"
 #include "Components/BoxComponent.h"
 #include "NavAreas/NavArea_Default.h"
 #include "NavAreas/NavArea_Null.h"
@@ -87,7 +87,7 @@ void ARPGCharacter::MoveToLocation(const FVector& TargetLocation)
 	}
 }
 
-void ARPGCharacter::MoveToActor(AActor* Actor, float MinDistanceToActor)
+void ARPGCharacter::MoveToActor(AActor* Actor, const float MinDistanceToActor)
 {
 	UPathFollowingComponent* PathFollowingComponent = FindPathFollowingComponent();
 	if (PathFollowingComponent)
@@ -116,7 +116,7 @@ void ARPGCharacter::MoveToActor(AActor* Actor, float MinDistanceToActor)
 	}
 }
 
-void ARPGCharacter::PlayHitAnimation(EHitDirection HitDirection)
+void ARPGCharacter::PlayHitAnimation(const EHitDirection HitDirection)
 {
 	switch (HitDirection)
 	{
@@ -129,12 +129,12 @@ void ARPGCharacter::PlayHitAnimation(EHitDirection HitDirection)
 	}
 }
 
-void ARPGCharacter::RotateToFaceLocation(const FVector& TargetLocation, float RotationSpeed, bool bStopWhenFaceTarget)
+void ARPGCharacter::RotateToFaceLocation(const FVector& TargetLocation, const float RotationSpeed, const bool bStopWhenFaceTarget)
 {
 	RotationState = {true, nullptr, TargetLocation, RotationSpeed, bStopWhenFaceTarget};
 }
 
-void ARPGCharacter::RotateToFaceActor(AActor* TargetActor, float RotationSpeed, bool bStopWhenFaceTarget)
+void ARPGCharacter::RotateToFaceActor(AActor* TargetActor, const float RotationSpeed, const bool bStopWhenFaceTarget)
 {
 	RotationState = {true, TargetActor, {}, RotationSpeed, bStopWhenFaceTarget};
 }
@@ -147,7 +147,7 @@ void ARPGCharacter::StopRotating()
 
 void ARPGCharacter::EnableOutline(EOutlineColor Color)
 {
-	int32 Stencil = static_cast<int32>(Color) + 1;
+	const int32 Stencil = static_cast<int32>(Color) + 1;
 	GetMesh()->SetRenderCustomDepth(true);
 	GetMesh()->CustomDepthStencilValue = Stencil;
 }
@@ -179,14 +179,14 @@ void ARPGCharacter::GetDamaged(const FDamage& Damage)
 	}
 
 	// if resistances are higher than 100%, then heal instead of damaging
-	FName ResistanceStatName = UTurnBasedUtility::DamageTypeToResistanceStat(Damage.DamageType);
-	float DamageMultiplier = 1.f - (Stats()->Get(ResistanceStatName) / 100.f);
+	const FName ResistanceStatName = UTurnBasedUtility::DamageTypeToResistanceStat(Damage.DamageType);
+	const float DamageMultiplier = 1.f - (Stats()->Get(ResistanceStatName) / 100.f);
 
-	float ActualDamage = Damage.DamageNumber * DamageMultiplier;
+	const float ActualDamage = Damage.DamageNumber * DamageMultiplier;
 
 	if (ActualDamage > 0.f)
 	{
-		float Armor = Stats()->Get(ArmorStatName);
+		const float Armor = Stats()->Get(ArmorStatName);
 		if (Armor >= ActualDamage)
 		{
 			Stats()->Remove(ArmorStatName, ActualDamage);
@@ -226,15 +226,15 @@ void ARPGCharacter::GetDamaged(const FDamage& Damage)
 
 bool ARPGCharacter::IsTurnAllowed()
 {
-	FGameplayTag StunTag = FGameplayTag::RequestGameplayTag("Effect.Debuff.Stun");
-	bool bStunt = HasTag(StunTag);
+	const FGameplayTag StunTag = FGameplayTag::RequestGameplayTag("Effect.Debuff.Stun");
+	const bool bStunt = HasTag(StunTag);
 
 	return !bStunt;
 }
 
 void ARPGCharacter::FocusCamera()
 {
-	auto* PlayerController = GetWorld()->GetFirstPlayerController<ARPGPlayerController>();
+	const auto* PlayerController = GetWorld()->GetFirstPlayerController<ARPGPlayerController>();
 	if (!PlayerController)
 	{
 		return;
@@ -269,7 +269,7 @@ void ARPGCharacter::OnStartTurn()
 
 	if (bPlayerControlled)
 	{
-		auto PlayerController = GetWorld()->GetFirstPlayerController<ARPGPlayerController>();
+		const auto PlayerController = GetWorld()->GetFirstPlayerController<ARPGPlayerController>();
 		checkf(PlayerController, TEXT("PlayerController is null"));
 
 		PlayerController->SetControlledCharacter(this);
@@ -285,7 +285,7 @@ void ARPGCharacter::OnEndTurn()
 
 	if (bPlayerControlled)
 	{
-		auto PlayerController = GetWorld()->GetFirstPlayerController<ARPGPlayerController>();
+		const auto PlayerController = GetWorld()->GetFirstPlayerController<ARPGPlayerController>();
 		PlayerController->SetControlledCharacter(nullptr);
 	}
 
@@ -299,7 +299,7 @@ int32 ARPGCharacter::CalculatePathAPCost(UNavigationPath* NavigationPath)
 		return 0;
 	}
 
-	float PathLength = NavigationPath->GetPathLength();
+	const float PathLength = NavigationPath->GetPathLength();
 
 	if (PathLength < AvailableDistanceForConsumedPoint)
 	{
@@ -308,14 +308,14 @@ int32 ARPGCharacter::CalculatePathAPCost(UNavigationPath* NavigationPath)
 	return CalculatePathAPCost(PathLength);
 }
 
-int32 ARPGCharacter::CalculatePathAPCost(float NavigationPathLength)
+int32 ARPGCharacter::CalculatePathAPCost(const float NavigationPathLength)
 {
 	return FMath::CeilToInt32((NavigationPathLength - AvailableDistanceForConsumedPoint) / Stats()->Get(SN_MaxWalkPerAP));
 }
 
 float ARPGCharacter::CalculateHitChance(const AActor* Target)
 {
-	if (auto OtherStats = Target->FindComponentByClass<UStatsComponent>())
+	if (const auto OtherStats = Target->FindComponentByClass<UStatsComponent>())
 	{
 		return Stats()->Get(SN_Accuracy) - OtherStats->Get(SN_Dodge);
 	}
@@ -329,13 +329,13 @@ void ARPGCharacter::Die()
 
 void ARPGCharacter::MeleeAttackLanded(ARPGCharacter* Target)
 {
-	float DamageNumber = Stats()->Get(SN_Damage);
-	EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(this, Target);
+	const float DamageNumber = Stats()->Get(SN_Damage);
+	const EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(this, Target);
 
 	Target->GetDamaged({DamageNumber, HitDirection});
 }
 
-void ARPGCharacter::ConsumeActionPoints(int32 Points)
+void ARPGCharacter::ConsumeActionPoints(const int32 Points)
 {
 	Stats()->Remove(SN_ActionPoints, Points);
 	if (FMath::RoundToInt32(Stats()->Get(SN_ActionPoints)) == 0 && GetTurnBasedComponent()->IsCurrentTurn())
@@ -428,7 +428,7 @@ bool ARPGCharacter::HasTag(const FGameplayTag& Tag) const
 	return GameplayTagContainer.HasTag(Tag);
 }
 
-void ARPGCharacter::ReadyAbility(int32 Index)
+void ARPGCharacter::ReadyAbility(const int32 Index)
 {
 	AbilityComponent->ReadyAbilityAt(Index);
 }
@@ -501,22 +501,22 @@ void ARPGCharacter::AddMissingStats()
 {
 	if (CharacterBaseBPClass)
 	{
-		auto DefaultCharacter = CharacterBaseBPClass->GetDefaultObject<ARPGCharacter>();
+		const auto DefaultCharacter = CharacterBaseBPClass->GetDefaultObject<ARPGCharacter>();
 		if (ensure(DefaultCharacter))
 		{
-			auto DefaultStats = DefaultCharacter->FindComponentByClass<UStatsComponent>();
+			const auto DefaultStats = DefaultCharacter->FindComponentByClass<UStatsComponent>();
 			UStatsComponent* CurrentStats = Stats();
 
-			TMap<FName, UGameStat*> StatsMap = DefaultStats->GetAllStats();
+			const TMap<FName, UGameStat*> StatsMap = DefaultStats->GetAllStats();
 			TArray<FName> StatNames;
 			StatsMap.GenerateKeyArray(StatNames);
 
-			for (FName StatName : StatNames)
+			for (const FName StatName : StatNames)
 			{
-				UGameStat* FoundStat = CurrentStats->FindStat(StatName);
+				const UGameStat* FoundStat = CurrentStats->FindStat(StatName);
 				if (FoundStat == nullptr)
 				{
-					UGameStat* DefaultStat = DefaultStats->FindStat(StatName);
+					const UGameStat* DefaultStat = DefaultStats->FindStat(StatName);
 					UGameStat* NewStat = DuplicateObject(DefaultStat, CurrentStats);
 					CurrentStats->AddStatToCollection(StatName, NewStat);
 				}
@@ -548,13 +548,13 @@ void ARPGCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 }
 
-void ARPGCharacter::Rotate(float DeltaTime)
+void ARPGCharacter::Rotate(const float DeltaTime)
 {
 	if (RotationState.bIsRotating)
 	{
-		FVector TargetLocation = RotationState.Actor ? RotationState.Actor->GetActorLocation() : RotationState.Location;
+		const FVector TargetLocation = RotationState.Actor ? RotationState.Actor->GetActorLocation() : RotationState.Location;
 		const FVector DiffVector = TargetLocation - GetLocation();
-		FRotator TargetRotation = FRotator(0.f, DiffVector.Rotation().Yaw, 0.f);
+		const FRotator TargetRotation = FRotator(0.f, DiffVector.Rotation().Yaw, 0.f);
 
 		const FRotator NextRotation = FMath::RInterpConstantTo(GetActorRotation(), TargetRotation, DeltaTime, RotationState.Speed);
 		SetActorRotation(NextRotation);
@@ -565,7 +565,7 @@ void ARPGCharacter::Rotate(float DeltaTime)
 	}
 }
 
-float ARPGCharacter::CalculateAverageMovePerFrame(float FrameMove)
+float ARPGCharacter::CalculateAverageMovePerFrame(const float FrameMove)
 {
 	if (!FMath::IsNearlyZero(FrameMove))
 	{
@@ -585,7 +585,7 @@ bool ARPGCharacter::IsMoving()
 
 void ARPGCharacter::Move()
 {
-	FVector CurrentLocation = GetLocation();
+	const FVector CurrentLocation = GetLocation();
 	PassedDistanceSinceLastFrame = FVector::Dist(CachedLocation, CurrentLocation);
 	CachedLocation = CurrentLocation;
 
@@ -611,7 +611,7 @@ void ARPGCharacter::Move()
 	}
 }
 
-void ARPGCharacter::Tick(float DeltaTime)
+void ARPGCharacter::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

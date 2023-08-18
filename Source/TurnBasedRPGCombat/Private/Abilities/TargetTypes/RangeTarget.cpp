@@ -3,7 +3,6 @@
 
 #include "Abilities/TargetTypes/RangeTarget.h"
 
-#include "NavigationPath.h"
 #include "Abilities/AbilityComponent.h"
 #include "Abilities/MoveAbility.h"
 #include "Abilities/TargetTypes/ArcTarget.h"
@@ -17,7 +16,7 @@ void URangeTarget::StartTargeting(ARPGPlayerController* InPlayerController)
 
 	ProjectileArc->StartTargeting(InPlayerController);
 
-	auto AbilityComponent = InPlayerController->GetControlledCharacter()->FindComponentByClass<UAbilityComponent>();
+	const auto AbilityComponent = InPlayerController->GetControlledCharacter()->FindComponentByClass<UAbilityComponent>();
 	if (ensure(AbilityComponent))
 	{
 		MoveTarget = Cast<UMoveTarget>(AbilityComponent->GetMoveAbility()->GetTargetState());

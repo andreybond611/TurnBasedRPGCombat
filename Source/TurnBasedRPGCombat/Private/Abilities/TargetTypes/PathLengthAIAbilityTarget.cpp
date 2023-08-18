@@ -11,9 +11,9 @@
 TArray<AActor*> UPathLengthAIAbilityTarget::GetAllEnemiesInBattle()
 {
 	TArray<AActor*> Result;
-	for (TScriptInterface<ITBBattleParticipant> BattleParticipant : ContextBattle->GetParticipants())
+	for (const TScriptInterface<ITBBattleParticipant> BattleParticipant : ContextBattle->GetParticipants())
 	{
-		if (auto* TeamAgent = Cast<IGenericTeamAgentInterface>(AbilityOwner))
+		if (const auto* TeamAgent = Cast<IGenericTeamAgentInterface>(AbilityOwner))
 		{
 			if (TeamAgent->GetTeamAttitudeTowards(*BattleParticipant->GetActor()) == ETeamAttitude::Hostile)
 			{
@@ -26,10 +26,10 @@ TArray<AActor*> UPathLengthAIAbilityTarget::GetAllEnemiesInBattle()
 
 TArray<float> UPathLengthAIAbilityTarget::FindWeights()
 {
-	for (AActor* Enemy : Enemies)
+	for (const AActor* Enemy : Enemies)
 	{
 		double PathLength;
-		ENavigationQueryResult::Type Result =
+		const ENavigationQueryResult::Type Result =
 			UNavigationSystemV1::GetPathLength(AbilityOwner, AbilityOwner->GetActorLocation(), Enemy->GetActorLocation(), PathLength);
 
 		if (Result == ENavigationQueryResult::Success)
@@ -52,7 +52,7 @@ TArray<float> UPathLengthAIAbilityTarget::FindWeights()
 
 void UPathLengthAIAbilityTarget::DoneFindingWeights()
 {
-	float Result = FindHighestWeight();
+	const float Result = FindHighestWeight();
 
 	NavSystem->OnNavigationGenerationFinishedDelegate.RemoveDynamic(this, &UPathLengthAIAbilityTarget::OnNavigationRebuild);
 	OnDesirabilityFound.Broadcast(Ability, Result);
@@ -67,7 +67,7 @@ void UPathLengthAIAbilityTarget::FindWeightForNextActor()
 	}
 
 	AActor* Enemy = Enemies[EnemyIndex];
-	if (auto DynamicObstacle = Cast<IDynamicObstacle>(Enemy))
+	if (const auto DynamicObstacle = Cast<IDynamicObstacle>(Enemy))
 	{
 		bFindPath = true;
 		// forces to rebuild navigation. see OnNavigationRebuild()
@@ -75,9 +75,9 @@ void UPathLengthAIAbilityTarget::FindWeightForNextActor()
 	}
 }
 
-void UPathLengthAIAbilityTarget::PathFound(uint32 QueryID, ENavigationQueryResult::Type Result, TSharedPtr<FNavigationPath, ESPMode::ThreadSafe> NavigationPath)
+void UPathLengthAIAbilityTarget::PathFound(uint32 QueryID, const ENavigationQueryResult::Type Result, TSharedPtr<FNavigationPath, ESPMode::ThreadSafe> NavigationPath)
 {
-	float Distance = NavigationPath->GetLength();
+	const float Distance = NavigationPath->GetLength();
 	if (Result == ENavigationQueryResult::Success)
 	{
 		if (Distance > MaxRange)
@@ -98,7 +98,7 @@ void UPathLengthAIAbilityTarget::PathFound(uint32 QueryID, ENavigationQueryResul
 	}
 
 	bFindPath = false;
-	if (auto DynamicObstacle = Cast<IDynamicObstacle>(Enemies[EnemyIndex]))
+	if (const auto DynamicObstacle = Cast<IDynamicObstacle>(Enemies[EnemyIndex]))
 	{
 		// forces to rebuild navigation. see OnNavigationRebuild()
 		DynamicObstacle->EnableDynamicObstacle();
@@ -107,7 +107,7 @@ void UPathLengthAIAbilityTarget::PathFound(uint32 QueryID, ENavigationQueryResul
 
 void UPathLengthAIAbilityTarget::FindPathToActorAsync(ANavigationData* NavData)
 {
-	AActor* Enemy = Enemies[EnemyIndex];
+	const AActor* Enemy = Enemies[EnemyIndex];
 
 	FPathFindingQuery PathFindingQuery;
 	PathFindingQuery.EndLocation = Enemy->GetActorLocation();
@@ -139,7 +139,7 @@ float UPathLengthAIAbilityTarget::FindHighestWeight()
 	float HighestWeight = 0.f;
 	int32 Index = 0;
 	int32 HighestWeightIndex = 0;
-	for (float Weight : Weights)
+	for (const float Weight : Weights)
 	{
 		if (Weight > HighestWeight)
 		{

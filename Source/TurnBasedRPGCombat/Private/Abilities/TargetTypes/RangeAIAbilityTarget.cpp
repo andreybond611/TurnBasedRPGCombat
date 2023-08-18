@@ -8,7 +8,6 @@
 #include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
-#include "GameFramework/MovementComponent.h"
 #include "TurnBased/TurnBasedBattle.h"
 #include "TurnBased/TurnBasedBattleParticipant.h"
 
@@ -16,7 +15,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogRangeAIAbilityTarget, All, All)
 
 FRangeAttackLocations FRangeAttackLocations::Invalid = {false};
 
-void FRangeAttackLocations::SetDesirability(double InDesirability)
+void FRangeAttackLocations::SetDesirability(const double InDesirability)
 {
 	if (InDesirability > HighestDesirability)
 	{
@@ -36,7 +35,7 @@ void URangeAIAbilityTarget::Init(AActor* InAbilityOwner, ATurnBasedBattle* InCon
 
 void URangeAIAbilityTarget::CalculateDesirabilityAsync()
 {
-	auto Stats = AbilityOwner->FindComponentByClass<UStatsComponent>();
+	const auto Stats = AbilityOwner->FindComponentByClass<UStatsComponent>();
 	if (ensure(Stats))
 	{
 		if (Stats->Get(SN_ActionPoints) < Ability->GetAPCost())
@@ -80,7 +79,7 @@ void URangeAIAbilityTarget::ChooseTargetActor()
 	Enemies.FilterByPredicate(
 		[this](const AActor* Key)
 		{
-			FRangeAttackLocations Location = *RangeAttackLocations.Find(Key); //-V522
+			const FRangeAttackLocations Location = *RangeAttackLocations.Find(Key); //-V522
 			return Location.GetDesirability() == FRangeAttackLocations::HighestDesirability; //-V550
 		});
 
@@ -90,7 +89,7 @@ void URangeAIAbilityTarget::ChooseTargetActor()
 	AActor* ChosenTarget = nullptr;
 	for (AActor* Enemy : Enemies)
 	{
-		FRangeAttackLocations Location = *RangeAttackLocations.Find(Enemy); //-V522
+		const FRangeAttackLocations Location = *RangeAttackLocations.Find(Enemy); //-V522
 		if (PreferredDistance == EPreferredDistance::Closest)
 		{
 			if (Location.PathToEnemyLength < ClosestOrFarthestDistance)
@@ -110,7 +109,7 @@ void URangeAIAbilityTarget::ChooseTargetActor()
 	}
 
 	static const FName TargetLocationName = "TargetLocation";
-	FVector LOSLocation = RangeAttackLocations[ChosenTarget].LineOfSightLocation;
+	const FVector LOSLocation = RangeAttackLocations[ChosenTarget].LineOfSightLocation;
 
 	Target.Actor = ChosenTarget;
 	Target.Location = TargetActor->GetActorLocation();
@@ -145,7 +144,7 @@ void URangeAIAbilityTarget::FindDesirabilityWithAPCost()
 		int32 MoveAPCost;
 		int32 AbilityAPCost;
 
-		if (auto Character = Cast<ARPGCharacter>(AbilityOwner))
+		if (const auto Character = Cast<ARPGCharacter>(AbilityOwner))
 		{
 			MoveAPCost = Character->CalculatePathAPCost(Location.PathToEnemyLength);
 			AbilityAPCost = Ability->GetAPCost();
@@ -167,7 +166,7 @@ void URangeAIAbilityTarget::FindDesirabilityWithAPCost()
 	}
 }
 
-void URangeAIAbilityTarget::PathToLOSFound(uint32 QueryID, ENavigationQueryResult::Type Result,
+void URangeAIAbilityTarget::PathToLOSFound(uint32 QueryID, const ENavigationQueryResult::Type Result,
 										   TSharedPtr<FNavigationPath, ESPMode::ThreadSafe> NavigationPath, AActor* Enemy)
 {
 	FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy); //-V522
@@ -189,7 +188,7 @@ void URangeAIAbilityTarget::PathToLOSFound(uint32 QueryID, ENavigationQueryResul
 	}
 }
 
-void URangeAIAbilityTarget::PathToEnemyFound(uint32 QueryID, ENavigationQueryResult::Type Result,
+void URangeAIAbilityTarget::PathToEnemyFound(uint32 QueryID, const ENavigationQueryResult::Type Result,
 											 TSharedPtr<FNavigationPath, ESPMode::ThreadSafe> NavigationPath, AActor* Enemy)
 {
 	FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy); //-V522
@@ -232,7 +231,7 @@ void URangeAIAbilityTarget::AllEQSFinished()
 
 	for (AActor* Enemy : Enemies)
 	{
-		FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy); //-V522
+		const FRangeAttackLocations Locations = *RangeAttackLocations.Find(Enemy); //-V522
 		if (Locations.bIsValid)
 		{
 			bValidLocations = true;

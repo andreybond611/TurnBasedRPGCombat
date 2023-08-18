@@ -1,7 +1,6 @@
 // Copyright 2022 Andrei Bondarenko. All rights reserved
 
 #include "UI/HUD/HUDWidget.h"
-#include "Blueprint/SlateBlueprintLibrary.h"
 #include "Blueprint/WidgetTree.h"
 #include "ActorComponents/TurnBasedComponent.h"
 #include "CharacterProgression/StatsComponent.h"
@@ -86,7 +85,7 @@ void UHUDWidget::OnDisplayedCharacterEnteredBattle()
 	ShowTurnSequence();
 }
 
-void UHUDWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UHUDWidget::NativeTick(const FGeometry& MyGeometry, const float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 

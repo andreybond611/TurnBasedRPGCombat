@@ -9,13 +9,13 @@
 
 EBTNodeResult::Type UBTTask_EndTurn::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	auto AIController = OwnerComp.GetOwner<AAIController>();
+	const auto AIController = OwnerComp.GetOwner<AAIController>();
 	if (!AIController)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	auto ControlledCharacter = AIController->GetPawn<ARPGCharacter>();
+	const auto ControlledCharacter = AIController->GetPawn<ARPGCharacter>();
 	if (!ControlledCharacter)
 	{
 		return EBTNodeResult::Failed;

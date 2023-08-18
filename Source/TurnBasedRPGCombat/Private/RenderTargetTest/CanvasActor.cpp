@@ -19,7 +19,7 @@ void ACanvasActor::BeginPlay()
 }
 
 // Called every frame
-void ACanvasActor::Tick(float DeltaTime)
+void ACanvasActor::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

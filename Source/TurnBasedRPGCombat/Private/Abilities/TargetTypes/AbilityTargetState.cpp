@@ -2,7 +2,6 @@
 
 #include "Abilities/TargetTypes/AbilityTargetState.h"
 
-#include "NavigationSystem.h"
 #include "Characters/RPGCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UnrealFramework/RPGPlayerController.h"
@@ -29,13 +28,13 @@ void UAbilityTargetState::TargetNotHit()
 
 bool UAbilityTargetState::IsHitLocationWalkable(const FHitResult& HitResult)
 {
-	auto* CharacterMovement = PlayerController->GetControlledCharacter()->GetCharacterMovement();
+	const auto* CharacterMovement = PlayerController->GetControlledCharacter()->GetCharacterMovement();
 	return CharacterMovement->IsWalkable(HitResult);
 }
 
-void UAbilityTargetState::EnableOutline(AActor* Actor, EOutlineColor Color)
+void UAbilityTargetState::EnableOutline(AActor* Actor, const EOutlineColor Color)
 {
-	if (auto Outlinable = Cast<IOutlinable>(Actor))
+	if (const auto Outlinable = Cast<IOutlinable>(Actor))
 	{
 		Outlinable->EnableOutline(Color);
 
@@ -46,7 +45,7 @@ void UAbilityTargetState::EnableOutline(AActor* Actor, EOutlineColor Color)
 	}
 }
 
-void UAbilityTargetState::EnableOutline(IOutlinable* Actor, EOutlineColor Color)
+void UAbilityTargetState::EnableOutline(IOutlinable* Actor, const EOutlineColor Color)
 {
 	if (Actor)
 	{
@@ -85,7 +84,7 @@ void UAbilityTargetState::DisableOutline(IOutlinable* Actor)
 
 void UAbilityTargetState::DisableAllOutlines()
 {
-	for (auto Actor : ActorsWithEnabledOutline)
+	for (const auto Actor : ActorsWithEnabledOutline)
 	{
 		Actor->DisableOutline();
 	}

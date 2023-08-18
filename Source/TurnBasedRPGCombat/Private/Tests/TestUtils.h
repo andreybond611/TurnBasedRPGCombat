@@ -20,9 +20,9 @@ ActorType* SpawnBlueprintActor(UWorld* World, const FString& BlueprintReference,
 UWorld* GetGameWorld();
 
 template <typename ActorType>
-ActorType* GetActorOfClass(TSubclassOf<AActor> ActorClass = ActorType::StaticClass())
+ActorType* GetActorOfClass(const TSubclassOf<AActor> ActorClass = ActorType::StaticClass())
 {
-	UWorld* World = GetGameWorld();
+	const UWorld* World = GetGameWorld();
 	check(World);
 	for (TActorIterator<AActor> It(World, ActorClass); It; ++It)
 	{

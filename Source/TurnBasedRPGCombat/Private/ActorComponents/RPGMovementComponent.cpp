@@ -21,14 +21,14 @@ void URPGMovementComponent::PostLoad()
 	}
 }
 
-void URPGMovementComponent::OnMoveSpeedStatChanged(float MoveSpeed)
+void URPGMovementComponent::OnMoveSpeedStatChanged(const float MoveSpeed)
 {
 	MaxWalkSpeed = MoveSpeed;
 
-	if (auto Character = Cast<ACharacter>(GetOwner()))
+	if (const auto Character = Cast<ACharacter>(GetOwner()))
 	{
 		UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
-		if (auto RPGAnimInstance = Cast<URPGAnimInstance>(AnimInstance))
+		if (const auto RPGAnimInstance = Cast<URPGAnimInstance>(AnimInstance))
 		{
 			RPGAnimInstance->SetMovementAnimRate(WalkSpeedStat->GetMultiplier());
 		}

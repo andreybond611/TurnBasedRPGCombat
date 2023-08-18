@@ -5,7 +5,6 @@
 #include "Abilities/MoveAbility.h"
 #include "Abilities/ReadiableAbility.h"
 #include "Abilities/SimpleAbility.h"
-#include "Abilities/TargetTypes/AIAbilityTarget.h"
 #include "Abilities/TargetTypes/NoneAbilityTarget.h"
 #include "Characters/RPGCharacter.h"
 #include "Characters/Animations/RPGAnimInstance.h"
@@ -34,7 +33,7 @@ void UAbilityComponent::ReadyAbility(UReadiableAbility* Ability)
 	}
 }
 
-void UAbilityComponent::ReadyAbilityAt(int32 Index)
+void UAbilityComponent::ReadyAbilityAt(const int32 Index)
 {
 	ReadyAbility(GetAbilityAt(Index));
 }
@@ -103,7 +102,7 @@ UAbility* UAbilityComponent::FindAbility(UClass* AbilityClass)
 	return nullptr;
 }
 
-UReadiableAbility* UAbilityComponent::GetAbilityAt(int32 Index)
+UReadiableAbility* UAbilityComponent::GetAbilityAt(const int32 Index)
 {
 	return Abilities.IsValidIndex(Index) ? Abilities[Index] : nullptr;
 }
@@ -205,7 +204,7 @@ void UAbilityComponent::BeginPlay()
 	Initialize();
 }
 
-void UAbilityComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UAbilityComponent::TickComponent(const float DeltaTime, const ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }

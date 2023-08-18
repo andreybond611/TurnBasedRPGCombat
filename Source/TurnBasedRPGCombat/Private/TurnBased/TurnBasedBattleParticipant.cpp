@@ -26,7 +26,7 @@ UTexture2D* ITBBattleParticipant::GetPortrait() const
 
 FVector ITBBattleParticipant::GetLocation()
 {
-	if (auto Actor = GetActor())
+	if (const auto Actor = GetActor())
 	{
 		return Actor->GetActorLocation();
 	}

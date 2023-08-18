@@ -12,7 +12,7 @@ UUndeadEffect::UUndeadEffect()
 
 void UUndeadEffect::ApplyTo(AActor* InActor)
 {
-	if (auto Stats = InActor->FindComponentByClass<UStatsComponent>())
+	if (const auto Stats = InActor->FindComponentByClass<UStatsComponent>())
 	{
 		Stats->SetConstant(SN_PoisonResistance, 200.f);
 	}
@@ -20,7 +20,7 @@ void UUndeadEffect::ApplyTo(AActor* InActor)
 
 void UUndeadEffect::Remove()
 {
-	if (auto Stats = TargetActor->FindComponentByClass<UStatsComponent>())
+	if (const auto Stats = TargetActor->FindComponentByClass<UStatsComponent>())
 	{
 		Stats->SetConstant(SN_PoisonResistance, 200.f);
 	}

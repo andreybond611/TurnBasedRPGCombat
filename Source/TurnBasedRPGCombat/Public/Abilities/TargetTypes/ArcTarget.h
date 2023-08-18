@@ -27,7 +27,7 @@ public:
 	bool IsVelocityFound() const { return bSuggestedVelocityFound; }
 	FVector GetTossVelocity() const { return TossVelocity; }
 	FPredictProjectilePathResult GetPredictPathResult() const { return PredictPathResult; }
-	void SetLaunchSpeed(float InLaunchSpeed) { LaunchSpeed = InLaunchSpeed; }
+	void SetLaunchSpeed(const float InLaunchSpeed) { LaunchSpeed = InLaunchSpeed; }
 	float GetProjectileRadius() const { return ProjectileRadius; }
 
 private:

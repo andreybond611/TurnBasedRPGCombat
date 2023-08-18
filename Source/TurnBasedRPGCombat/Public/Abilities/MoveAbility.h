@@ -25,7 +25,7 @@ public:
 	FOnMoveToActorSucceeded OnMoveToActorSucceeded;
 
 
-	void SetAcceptanceRadius(float InAcceptanceRadius) { AcceptanceRadius = InAcceptanceRadius; }
+	void SetAcceptanceRadius(const float InAcceptanceRadius) { AcceptanceRadius = InAcceptanceRadius; }
 private:
 	UPROPERTY(EditAnywhere)
 	float AcceptanceRadius = 120.f;

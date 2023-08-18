@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "ProgressBarBinding.generated.h"
 
+class UGameStat;
+class UTextBlock;
+class UProgressBar;
 /**
  * Binds UGameStat to a progress bar
  */

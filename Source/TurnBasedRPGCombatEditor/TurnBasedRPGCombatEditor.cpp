@@ -5,7 +5,9 @@
 #include "Dialogs/SOutputLogDialog.h"
 #include "GameProjectGeneration/Public/GameProjectGenerationModule.h"
 #include "GeneralProjectSettings.h"
+#include "RPGEditorCommands.h"
 #include "AlignmentEditorWindow/AlignmentEditorButtonStyle.h"
+#include "Misc/FileHelper.h"
 #include "Modules/ModuleInterface.h"
 #include "Modules/ModuleManager.h"
 
@@ -88,13 +90,13 @@ void FTurnBasedRPGCombatEditorModule::RefreshProject()
 
 void FTurnBasedRPGCombatEditorModule::CreateSimpleTestFiles(const TArray<FString>& Args)
 {
-	FString TestName = Args.IsValidIndex(0) ? Args[0] : "Untitled";
-	FString CopyrightNotice = GetDefault<UGeneralProjectSettings>()->CopyrightNotice;
+	const FString TestName = Args.IsValidIndex(0) ? Args[0] : "Untitled";
+	const FString CopyrightNotice = GetDefault<UGeneralProjectSettings>()->CopyrightNotice;
 
-	FString SimpleTestCPPTemplateLocation = FPaths::ProjectDir().Append(TEXT("/CodeTemplates/SimpleTest.cpp.template"));
-	FString SimpleTestHeaderTemplateLocation = FPaths::ProjectDir().Append(TEXT("/CodeTemplates/SimpleTest.h.template"));
+	const FString SimpleTestCPPTemplateLocation = FPaths::ProjectDir().Append(TEXT("/CodeTemplates/SimpleTest.cpp.template"));
+	const FString SimpleTestHeaderTemplateLocation = FPaths::ProjectDir().Append(TEXT("/CodeTemplates/SimpleTest.h.template"));
 
-	FString TestLocation = FString::Printf(TEXT("%s%s/Private/Tests/"), *FPaths::GameSourceDir(), FApp::GetProjectName());
+	const FString TestLocation = FString::Printf(TEXT("%s%s/Private/Tests/"), *FPaths::GameSourceDir(), FApp::GetProjectName());
 
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 
@@ -151,13 +153,13 @@ void FTurnBasedRPGCombatEditorModule::CreateSimpleTestFiles(const TArray<FString
 
 void FTurnBasedRPGCombatEditorModule::CreateAutomationSpecFiles(const TArray<FString>& Args)
 {
-	FString TestName = Args.IsValidIndex(0) ? Args[0] : "Untitled";
-	FString CopyrightNotice = GetDefault<UGeneralProjectSettings>()->CopyrightNotice;
+	const FString TestName = Args.IsValidIndex(0) ? Args[0] : "Untitled";
+	const FString CopyrightNotice = GetDefault<UGeneralProjectSettings>()->CopyrightNotice;
 
-	FString AutomationSpecCPPTemplateLocation = FPaths::ProjectDir().Append(TEXT("/CodeTemplates/AutomationSpec.cpp.template"));
-	FString AutomationSpecHeaderTemplateLocation = FPaths::ProjectDir().Append(TEXT("/CodeTemplates/AutomationSpec.h.template"));
+	const FString AutomationSpecCPPTemplateLocation = FPaths::ProjectDir().Append(TEXT("/CodeTemplates/AutomationSpec.cpp.template"));
+	const FString AutomationSpecHeaderTemplateLocation = FPaths::ProjectDir().Append(TEXT("/CodeTemplates/AutomationSpec.h.template"));
 
-	FString TestLocation = FString::Printf(TEXT("%s%s/Private/Tests/"), *FPaths::GameSourceDir(), FApp::GetProjectName());
+	const FString TestLocation = FString::Printf(TEXT("%s%s/Private/Tests/"), *FPaths::GameSourceDir(), FApp::GetProjectName());
 
 	IPlatformFile& FileManager = FPlatformFileManager::Get().GetPlatformFile();
 
@@ -278,7 +280,7 @@ void FTurnBasedRPGCombatEditorModule::OpenAlignmentEditor()
 
 void FTurnBasedRPGCombatEditorModule::AddToolbarExtension(FToolBarBuilder& Builder)
 {
-	FSlateIcon IconBrush = FSlateIcon(FAppStyle::GetAppStyleSetName(), "PlayWorld.RepeatLastLaunch");
+	const FSlateIcon IconBrush = FSlateIcon(FAppStyle::GetAppStyleSetName(), "PlayWorld.RepeatLastLaunch");
 
 	Builder.AddToolBarButton(FRPGEditorCommands::Get().AlignmentEditorButton, NAME_None, 
 							 NSLOCTEXT("CustomEditorUI", "AlignmentEditorButton", "Alignment Editor"),

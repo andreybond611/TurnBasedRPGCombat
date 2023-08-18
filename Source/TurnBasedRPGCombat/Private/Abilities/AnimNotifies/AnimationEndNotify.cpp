@@ -9,9 +9,9 @@
 
 void UAnimationEndNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
-	if (auto* Character = Cast<ARPGCharacter>(MeshComp->GetOwner()))
+	if (const auto* Character = Cast<ARPGCharacter>(MeshComp->GetOwner()))
 	{
-		UAbility* ExecutingAbility = Character->GetAbilityComponent()->GetAbilityAt(AbilityIndex);
+		const UAbility* ExecutingAbility = Character->GetAbilityComponent()->GetAbilityAt(AbilityIndex);
 		if (ExecutingAbility)
 		{
 			ExecutingAbility->OnAnimationEnd.Broadcast();

@@ -13,7 +13,7 @@ void UMeleeAttackAbility::AddToCharacter(ARPGCharacter* Character)
 {
 	Super::AddToCharacter(Character);
 
-	UAbilityComponent* AbilityComponent = Character->GetAbilityComponent();
+	const UAbilityComponent* AbilityComponent = Character->GetAbilityComponent();
 	MoveAbility = AbilityComponent->GetMoveAbility();
 }
 
@@ -51,10 +51,10 @@ void UMeleeAttackAbility::EndAbility()
 
 void UMeleeAttackAbility::MeleeAttackLanded(AActor* TargetActor)
 {
-	if (auto Damageable = Cast<IDamageable>(TargetActor))
+	if (const auto Damageable = Cast<IDamageable>(TargetActor))
 	{
-		float DamageNumber = Owner->Stats()->Get(SN_Damage);
-		EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Owner, TargetActor);
+		const float DamageNumber = Owner->Stats()->Get(SN_Damage);
+		const EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Owner, TargetActor);
 
 		FDamage Damage;
 		Damage.DamageNumber = DamageNumber;
@@ -81,9 +81,9 @@ void UMeleeAttackAbility::OnMoveToActorFinished(FAIRequestID AIRequestID, const 
 
 		checkf(!MeleeAttackMontages.IsEmpty(), TEXT("%s doesn't have melee attack anim montages"), *GetName());
 
-		int32 MontagesNum = MeleeAttackMontages.Num() - 1;
+		const int32 MontagesNum = MeleeAttackMontages.Num() - 1;
 		UAnimMontage* MeleeMontage = MeleeAttackMontages[FMath::RandRange(0, MontagesNum)];
-		float AttackMontageLength = Owner->PlayAnimMontage(MeleeMontage);
+		const float AttackMontageLength = Owner->PlayAnimMontage(MeleeMontage);
 
 		Owner->OnHitLanded.BindUObject(this, &UMeleeAttackAbility::MeleeAttackLanded, MeleeTarget);
 

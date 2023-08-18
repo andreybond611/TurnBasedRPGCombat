@@ -84,9 +84,9 @@ void UEffectComponent::StartTurn()
 	ReduceEffects();
 }
 
-bool UEffectComponent::HasEffect(TSubclassOf<UEffect> Class)
+bool UEffectComponent::HasEffect(const TSubclassOf<UEffect> Class)
 {
-	for (UEffect* Effect : Effects)
+	for (const UEffect* Effect : Effects)
 	{
 		if (Effect->IsA(Class))
 		{
@@ -98,19 +98,19 @@ bool UEffectComponent::HasEffect(TSubclassOf<UEffect> Class)
 
 void UEffectComponent::AddConstantEffects()
 {
-	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(GetOwner()))
+	if (const auto GameplayTagHolder = Cast<IGameplayTagHolder>(GetOwner()))
 	{
 		FGameplayTagContainer TagContainer;
 		GameplayTagHolder->GetOwnedGameplayTags(TagContainer);
 
-		auto EffectMap = GetDefault<UConstantEffectMap>(ConstantEffectMap);
+		const auto EffectMap = GetDefault<UConstantEffectMap>(ConstantEffectMap);
 
 		for (FGameplayTag Tag : TagContainer)
 		{
 			if (EffectMap->ConstantEffectClasses.Contains(Tag))
 			{
 				TSubclassOf<UEffect> EffectClass = EffectMap->ConstantEffectClasses[Tag];
-				auto NewConstantEffect = NewObject<UEffect>(this, EffectClass);
+				const auto NewConstantEffect = NewObject<UEffect>(this, EffectClass);
 				if (ensure(NewConstantEffect))
 				{
 					AddEffect(NewConstantEffect);
@@ -136,7 +136,7 @@ void UEffectComponent::OnRegister()
 {
 	Super::OnRegister();
 
-	FString Flags = UTurnBasedUtility::ObjectFlagToString(GetFlags());
+	const FString Flags = UTurnBasedUtility::ObjectFlagToString(GetFlags());
 	UE_LOG(LogTemp, Warning, TEXT("Name: %s, Flags: %s"), *GetName(), *Flags);
 
 	if (!HasAllFlags(RF_ClassDefaultObject | RF_AllocatedInSharedPage))

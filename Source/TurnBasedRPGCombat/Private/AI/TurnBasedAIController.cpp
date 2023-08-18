@@ -18,7 +18,7 @@ void ATurnBasedAIController::OnPossess(APawn* InPawn)
 		RunBehaviorTree(Behavior);
 	}
 
-	auto* ControlledCharacter = Cast<ARPGCharacter>(InPawn);
+	const auto* ControlledCharacter = Cast<ARPGCharacter>(InPawn);
 	if (ensure(ControlledCharacter))
 	{
 		ControlledCharacter->GetTurnBasedComponent()->OnEnterBattle.AddDynamic(this, &ATurnBasedAIController::EnterBattle);
@@ -39,14 +39,14 @@ void ATurnBasedAIController::EndTurn()
 	GetBlackboardComponent()->SetValueAsBool("CurrentTurn", false);
 }
 
-void ATurnBasedAIController::SetPlayerControlled(bool bPlayerControlled)
+void ATurnBasedAIController::SetPlayerControlled(const bool bPlayerControlled)
 {
 	GetBlackboardComponent()->SetValueAsBool("PlayerControlled", bPlayerControlled);
 }
 
 void ATurnBasedAIController::EnterBattle()
 {
-	auto TurnBasedComponent = GetPawn<ARPGCharacter>()->GetTurnBasedComponent();
+	const auto TurnBasedComponent = GetPawn<ARPGCharacter>()->GetTurnBasedComponent();
 	ATurnBasedBattle* CurrentBattle = TurnBasedComponent->GetCurrentBattle();
 
 	GetBlackboardComponent()->SetValueAsObject("CurrentBattle", CurrentBattle);

@@ -7,7 +7,7 @@ void UStatsComponent::InitializeStats()
 {
 }
 
-void UStatsComponent::SetStatAsMaxStat(FName StatName, FName MaxStatName)
+void UStatsComponent::SetStatAsMaxStat(const FName StatName, const FName MaxStatName)
 {
 	UGameStat* Stat = FindStat(StatName);
 	UGameStat* MaxStat = FindStat(MaxStatName);
@@ -18,7 +18,7 @@ void UStatsComponent::SetStatAsMaxStat(FName StatName, FName MaxStatName)
 	}
 }
 
-UGameStat* UStatsComponent::FindStat(FName StatName)
+UGameStat* UStatsComponent::FindStat(const FName StatName)
 {
 	if (Stats.Contains(StatName))
 	{
@@ -27,7 +27,7 @@ UGameStat* UStatsComponent::FindStat(FName StatName)
 	return nullptr;
 }
 
-float UStatsComponent::Get(FName StatName)
+float UStatsComponent::Get(const FName StatName)
 {
 	if (Stats.Contains(StatName))
 	{
@@ -37,7 +37,7 @@ float UStatsComponent::Get(FName StatName)
 	return 0.f;
 }
 
-void UStatsComponent::Set(FName StatName, float Value)
+void UStatsComponent::Set(const FName StatName, const float Value)
 {
 	if (Stats.Contains(StatName))
 	{
@@ -46,7 +46,7 @@ void UStatsComponent::Set(FName StatName, float Value)
 	}
 }
 
-void UStatsComponent::SetConstant(FName StatName, float Value)
+void UStatsComponent::SetConstant(const FName StatName, const float Value)
 {
 	if (Stats.Contains(StatName))
 	{
@@ -55,7 +55,7 @@ void UStatsComponent::SetConstant(FName StatName, float Value)
 	}
 }
 
-void UStatsComponent::Add(FName StatName, float Value)
+void UStatsComponent::Add(const FName StatName, const float Value)
 {
 	if (Stats.Contains(StatName))
 	{
@@ -64,7 +64,7 @@ void UStatsComponent::Add(FName StatName, float Value)
 	}
 }
 
-void UStatsComponent::Remove(FName StatName, float Value)
+void UStatsComponent::Remove(const FName StatName, const float Value)
 {
 	if (Stats.Contains(StatName))
 	{
@@ -73,14 +73,14 @@ void UStatsComponent::Remove(FName StatName, float Value)
 	}
 }
 
-UGameStat* UStatsComponent::CreateStat(FName StatName, FText TextName, float InitialValue, float MinValue, float MaxValue)
+UGameStat* UStatsComponent::CreateStat(const FName StatName, const FText TextName, const float InitialValue, const float MinValue, const float MaxValue)
 {
 	UGameStat* CreatedStat = UGameStat::Create(InitialValue, TextName, MinValue, MaxValue);
 	Stats.Add(StatName, CreatedStat);
 	return CreatedStat;
 }
 
-void UStatsComponent::AddMultiplier(FName StatName, float Multiplier)
+void UStatsComponent::AddMultiplier(const FName StatName, const float Multiplier)
 {
 	if (Stats.Contains(StatName))
 	{
@@ -89,7 +89,7 @@ void UStatsComponent::AddMultiplier(FName StatName, float Multiplier)
 	}
 }
 
-void UStatsComponent::AddStatToCollection(FName StatName, UGameStat* Stat)
+void UStatsComponent::AddStatToCollection(const FName StatName, UGameStat* Stat)
 {
 	if (StatName != NAME_None && Stat != nullptr)
 	{
@@ -97,7 +97,7 @@ void UStatsComponent::AddStatToCollection(FName StatName, UGameStat* Stat)
 	}
 }
 
-void UStatsComponent::DeleteStatAt(FName StatName)
+void UStatsComponent::DeleteStatAt(const FName StatName)
 {
 	Stats.Remove(StatName);
 }

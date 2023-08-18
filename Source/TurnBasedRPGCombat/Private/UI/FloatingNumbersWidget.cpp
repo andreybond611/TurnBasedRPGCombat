@@ -6,23 +6,23 @@
 #include "UI/FloatingNumberWidget.h"
 #include "Utility/TurnBasedTypes.h"
 
-void UFloatingNumbersWidget::AddFloatingNumber(int32 Number, FColor Color)
+void UFloatingNumbersWidget::AddFloatingNumber(const int32 Number, const FColor Color)
 {
 	FVector2D PanelSize = FloatingNumbersPanel->GetDesiredSize();
 
-	auto FloatingNumberWidget = CreateWidget<UFloatingNumberWidget>(this, *FloatingDamageWidgetClass);
+	const auto FloatingNumberWidget = CreateWidget<UFloatingNumberWidget>(this, *FloatingDamageWidgetClass);
 	UCanvasPanelSlot* PanelSlot = FloatingNumbersPanel->AddChildToCanvas(FloatingNumberWidget);
 	PanelSlot->SetPosition({PanelSize.X * 0.5f, PanelSize.Y});
 	FloatingNumberWidget->Init(Number, Color);
 }
 
-void UFloatingNumbersWidget::AddFloatingNumber(int32 Number, EFloatingNumberColor Color)
+void UFloatingNumbersWidget::AddFloatingNumber(const int32 Number, const EFloatingNumberColor Color)
 {
-	FColor FloatingNumberColor = GetColorFromDamageType(Color);
+	const FColor FloatingNumberColor = GetColorFromDamageType(Color);
 	AddFloatingNumber(Number, FloatingNumberColor);
 }
 
-FColor UFloatingNumbersWidget::GetColorFromDamageType(EFloatingNumberColor DamageType) const
+FColor UFloatingNumbersWidget::GetColorFromDamageType(const EFloatingNumberColor DamageType) const
 {
 	switch (DamageType)
 	{
@@ -38,11 +38,11 @@ FColor UFloatingNumbersWidget::GetColorFromDamageType(EFloatingNumberColor Damag
 	}
 }
 
-void UFloatingNumbersWidget::AddFloatingMessage(const FText& Message, FColor Color)
+void UFloatingNumbersWidget::AddFloatingMessage(const FText& Message, const FColor Color)
 {
 	FVector2D PanelSize = FloatingNumbersPanel->GetDesiredSize();
 
-	auto FloatingNumberWidget = CreateWidget<UFloatingNumberWidget>(this, *FloatingDamageWidgetClass);
+	const auto FloatingNumberWidget = CreateWidget<UFloatingNumberWidget>(this, *FloatingDamageWidgetClass);
 	UCanvasPanelSlot* PanelSlot = FloatingNumbersPanel->AddChildToCanvas(FloatingNumberWidget);
 	PanelSlot->SetPosition({ PanelSize.X * 0.5f, PanelSize.Y });
 	FloatingNumberWidget->Init(Message, Color);

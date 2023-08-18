@@ -30,9 +30,9 @@ void UHealAbility::RemoveFromCharacter(ARPGCharacter* Character)
 
 void UHealAbility::ApplyEffect()
 {
-	if (auto HealEffect = NewObject<UEffect>(this, *AppliedEffectClass))
+	if (const auto HealEffect = NewObject<UEffect>(this, *AppliedEffectClass))
 	{
-		if (auto EffectComponent = GetTarget().Actor->FindComponentByClass<UEffectComponent>())
+		if (const auto EffectComponent = GetTarget().Actor->FindComponentByClass<UEffectComponent>())
 		{
 			EffectComponent->AddEffect(HealEffect);
 		}

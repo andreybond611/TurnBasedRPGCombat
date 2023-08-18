@@ -16,19 +16,19 @@ EBTNodeResult::Type UBTTask_ExecuteTargetAbility::ExecuteTask(UBehaviorTreeCompo
 
 	if (Ability)
 	{
-		AAIController* AIController = Cast<AAIController>(OwnerComp.GetOwner());
+		const AAIController* AIController = Cast<AAIController>(OwnerComp.GetOwner());
 		if (!AIController)
 		{
 			return EBTNodeResult::Aborted;
 		}
 
-		APawn* Pawn = AIController->GetPawn();
+		const APawn* Pawn = AIController->GetPawn();
 		if (!Pawn)
 		{
 			return EBTNodeResult::Aborted;
 		}
 
-		if (auto AbilityComponent = Pawn->FindComponentByClass<UAbilityComponent>())
+		if (const auto AbilityComponent = Pawn->FindComponentByClass<UAbilityComponent>())
 		{
 			AbilityComponent->ExecuteAbility(Ability);
 			Ability->OnAbilityDoneExecuting.AddDynamic(this, &UBTTask_ExecuteTargetAbility::AbilityDone);

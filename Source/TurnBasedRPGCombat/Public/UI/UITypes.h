@@ -8,7 +8,7 @@ struct FPriorityText
 {
 	FPriorityText() = default;
 
-	FPriorityText(FText InText, int32 InPriority, FColor InColor = FColor::White)
+	FPriorityText(FText InText, const int32 InPriority, const FColor InColor = FColor::White)
 		: Text{InText}
 		, Priority{InPriority}
 		, Color{InColor}

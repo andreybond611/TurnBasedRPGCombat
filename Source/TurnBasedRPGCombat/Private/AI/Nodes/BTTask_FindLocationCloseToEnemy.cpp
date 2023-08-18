@@ -11,10 +11,10 @@ EBTNodeResult::Type UBTTask_FindLocationCloseToEnemy::ExecuteTask(UBehaviorTreeC
 {
 	const static FName CurrentBattleName = "CurrentBattle";
 
-	auto AIController = OwnerComp.GetOwner<AAIController>();
-	if (auto Pawn = AIController->GetPawn())
+	const auto AIController = OwnerComp.GetOwner<AAIController>();
+	if (const auto Pawn = AIController->GetPawn())
 	{
-		ATurnBasedBattle* Battle = Cast<ATurnBasedBattle>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(CurrentBattleName));
+		const ATurnBasedBattle* Battle = Cast<ATurnBasedBattle>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(CurrentBattleName));
 		if (!Battle)
 		{
 			return EBTNodeResult::Aborted;
@@ -24,9 +24,9 @@ EBTNodeResult::Type UBTTask_FindLocationCloseToEnemy::ExecuteTask(UBehaviorTreeC
 
 		float MinDistance = TNumericLimits<float>::Max();
 		AActor* ClosestActor = nullptr;
-		for (auto BattleParticipant : Enemies)
+		for (const auto BattleParticipant : Enemies)
 		{
-			float Distance = FVector::DistSquared(Pawn->GetActorLocation(), BattleParticipant->GetLocation());
+			const float Distance = FVector::DistSquared(Pawn->GetActorLocation(), BattleParticipant->GetLocation());
 			if (Distance < MinDistance)
 			{
 				MinDistance = Distance;

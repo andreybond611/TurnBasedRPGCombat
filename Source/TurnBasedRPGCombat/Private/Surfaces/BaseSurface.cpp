@@ -35,7 +35,7 @@ void UBaseSurface::OnSurfaceIntersect(ARPGSurface* OtherSurface)
 
 }
 
-void UBaseSurface::ChangeSurfaceType(TSubclassOf<UBaseSurface> InSurfaceType)
+void UBaseSurface::ChangeSurfaceType(const TSubclassOf<UBaseSurface> InSurfaceType)
 {
 	SurfaceActor->SetSurfaceType(InSurfaceType);
 
@@ -43,7 +43,7 @@ void UBaseSurface::ChangeSurfaceType(TSubclassOf<UBaseSurface> InSurfaceType)
 	{
 		for (ARPGSurface* OverlappingSurface : SurfaceActor->GetOverlappingSurfaces())
 		{
-			ARPGSurface* OverlappingSurfaceActor = CastChecked<ARPGSurface>(OverlappingSurface);
+			const ARPGSurface* OverlappingSurfaceActor = CastChecked<ARPGSurface>(OverlappingSurface);
 			OverlappingSurfaceActor->GetSurface()->OnSurfaceIntersect(SurfaceActor);
 		}
 	});

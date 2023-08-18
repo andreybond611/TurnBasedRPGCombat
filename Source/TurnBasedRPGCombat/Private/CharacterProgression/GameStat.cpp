@@ -13,7 +13,7 @@ UGameStat::UGameStat()
 	ValueForEdit = ActualValue;
 }
 
-void UGameStat::SetValue(float InValue)
+void UGameStat::SetValue(const float InValue)
 {
 	if (!bIsConstant)
 	{
@@ -26,7 +26,7 @@ void UGameStat::SetValue(float InValue)
 	}
 }
 
-void UGameStat::SetConstant(float InValue)
+void UGameStat::SetConstant(const float InValue)
 {
 	if (bIsConstant)
 	{
@@ -36,10 +36,10 @@ void UGameStat::SetConstant(float InValue)
 	bIsConstant = true;
 }
 
-UGameStat* UGameStat::Create(float InInitialValue, FText InName, float InMinValue, float InMaxValue)
+UGameStat* UGameStat::Create(const float InInitialValue, FText InName, const float InMinValue, const float InMaxValue)
 {
 	// todo: pass FName instead of converting FText
-	FName StatName = MakeUniqueObjectName(GetTransientPackage(), StaticClass(), FName(InName.ToString()));
+	const FName StatName = MakeUniqueObjectName(GetTransientPackage(), StaticClass(), FName(InName.ToString()));
 
 	UGameStat* NewStat = NewObject<UGameStat>(GetTransientPackage(), StatName);
 	NewStat->MaxValue = InMaxValue;
@@ -49,7 +49,7 @@ UGameStat* UGameStat::Create(float InInitialValue, FText InName, float InMinValu
 	return NewStat;
 }
 
-void UGameStat::Add(float Value)
+void UGameStat::Add(const float Value)
 {
 	if (Value < 0.f)
 	{
@@ -59,7 +59,7 @@ void UGameStat::Add(float Value)
 
 	if (Value != 0.f && !bIsConstant) //-V550
 	{
-		float PreviousValue = ActualValue;
+		const float PreviousValue = ActualValue;
 
 		OverflowValue = OverflowValue + Value;
 		ActualValue = FMath::Clamp(OverflowValue, MinValue, MaxValue);
@@ -79,7 +79,7 @@ void UGameStat::Add(float Value)
 	}
 }
 
-void UGameStat::Remove(float Value)
+void UGameStat::Remove(const float Value)
 {
 	if (Value < 0.f)
 	{
@@ -89,7 +89,7 @@ void UGameStat::Remove(float Value)
 
 	if (Value != 0.f && !bIsConstant) //-V550
 	{
-		float PreviousValue = ActualValue;
+		const float PreviousValue = ActualValue;
 
 		OverflowValue = OverflowValue - Value;
 		ActualValue = FMath::Clamp(OverflowValue, MinValue, MaxValue);
@@ -109,7 +109,7 @@ void UGameStat::Remove(float Value)
 	}
 }
 
-void UGameStat::AddMultiplier(float InMultiplier)
+void UGameStat::AddMultiplier(const float InMultiplier)
 {
 	OverflowValue /= PreviousMultiplier;
 	Multiplier = FMath::Clamp<float>(Multiplier + InMultiplier, 0.f, 9999.f);
@@ -135,7 +135,7 @@ void UGameStat::PostEditChangeProperty(FPropertyChangedEvent& PropertyChangedEve
 {
 	UObject::PostEditChangeProperty(PropertyChangedEvent);
 
-	FName StatPropertyName = PropertyChangedEvent.GetPropertyName();
+	const FName StatPropertyName = PropertyChangedEvent.GetPropertyName();
 	if (StatPropertyName == GET_MEMBER_NAME_CHECKED(UGameStat, ValueForEdit))
 	{
 		SetValue(ValueForEdit);

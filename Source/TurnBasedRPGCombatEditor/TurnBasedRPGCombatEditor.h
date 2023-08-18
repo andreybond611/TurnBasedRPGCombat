@@ -2,12 +2,8 @@
 
 #pragma once
 
-#include "Engine.h"
 #include "Modules/ModuleInterface.h"
 #include "Modules/ModuleManager.h"
-#include "UnrealEd.h"
-#include "RPGEditorCommands.h"
-#include "Interfaces/IMainFrameModule.h"
 
 class FTurnBasedRPGCombatEditorModule : public IModuleInterface
 {

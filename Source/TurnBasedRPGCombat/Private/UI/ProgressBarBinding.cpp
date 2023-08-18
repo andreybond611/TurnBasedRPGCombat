@@ -43,25 +43,25 @@ void UProgressBarBinding::Unbind()
 	TextBlock = nullptr;
 }
 
-void UProgressBarBinding::OnStatChanged(float Value)
+void UProgressBarBinding::OnStatChanged(const float Value)
 {
 	ProgressBar->SetPercent(GetStatPercent(Value, MaxStat->Get()));
 	SetText(Value, MaxStat->Get());
 }
 
-void UProgressBarBinding::SetText(float CurrentHealth, float MaxHealth)
+void UProgressBarBinding::SetText(const float CurrentHealth, const float MaxHealth)
 {
 	FText Text = FText::Format(NSLOCTEXT("UI", "HealthBarNumbers", "{0}/{1}"), static_cast<int32>(CurrentHealth), static_cast<int32>(MaxHealth));
 	TextBlock->SetText(Text);
 }
 
-void UProgressBarBinding::OnMaxStatChanged(float Value)
+void UProgressBarBinding::OnMaxStatChanged(const float Value)
 {
 	ProgressBar->SetPercent(GetStatPercent(CurrentStat->Get(), Value));
 	SetText(CurrentStat->Get(), Value);
 }
 
-float UProgressBarBinding::GetStatPercent(float InCurrentStat, float InMaxStat) const
+float UProgressBarBinding::GetStatPercent(const float InCurrentStat, const float InMaxStat) const
 {
 	return InMaxStat == 0.f ? 0.f : InCurrentStat / InMaxStat; //-V550
 }

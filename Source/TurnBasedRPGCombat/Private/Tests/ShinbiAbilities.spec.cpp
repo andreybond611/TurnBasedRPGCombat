@@ -40,7 +40,7 @@ void FShinbiAbilitiesSpec::Define()
 		PlayerController = World->GetFirstPlayerController();
 		PlayerPawn = PlayerController->GetPawn();
 
-		auto* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		const auto* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		PlayerInput = InputSubsystem->GetPlayerInput();
 
 		FTimerHandle MapInitializationTimerHandle;
@@ -60,7 +60,7 @@ void FShinbiAbilitiesSpec::Define()
 		LatentIt("Dash should execute", [this](const FDoneDelegate& Done)
 		{
 			UInputAction* InputAction = TestActor->AbilityInput1;
-			FInputActionValue ActionValue(true);
+			const FInputActionValue ActionValue(true);
 			PlayerInput->InjectInputForAction(InputAction, ActionValue);
 
 			FVector2D ScreenLocation;
@@ -78,7 +78,7 @@ void FShinbiAbilitiesSpec::Define()
 				World->GetTimerManager().SetTimer(MouseLocationTimerHandle, [this, Done]()
 				{
 					UInputAction* InputAction = TestActor->ExecuteAbilityInput;
-					FInputActionValue ActionValue(true);
+					const FInputActionValue ActionValue(true);
 					PlayerInput->InjectInputForAction(InputAction, ActionValue);
 				}, 0.1f, false);
 
@@ -107,14 +107,14 @@ void FShinbiAbilitiesSpec::Define()
 				float EnemyInitialHP = TestActor->Enemy->Stats()->Get(SN_Health);
 
 				UInputAction* AbilityInput = TestActor->AbilityInput2;
-				FInputActionValue ActionValue(true);
+				const FInputActionValue ActionValue(true);
 				PlayerInput->InjectInputForAction(AbilityInput, ActionValue);
 
 				FTimerHandle AnimationTimerHandle;
 				World->GetTimerManager().SetTimer(AnimationTimerHandle, [this, Done]()
 				{
 					UInputAction* InputAction = TestActor->ExecuteAbilityInput;
-					FInputActionValue ActionValue(true);
+					const FInputActionValue ActionValue(true);
 					PlayerInput->InjectInputForAction(InputAction, ActionValue);
 				}, 1.f, false);
 				

@@ -5,13 +5,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "Components/ArrowComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Input/CameraInputConfigData.h"
-#include "GameFramework/DefaultPawn.h"
 #include "GameFramework/FloatingPawnMovement.h"
-#include "GameFramework/InputSettings.h"
 #include "Kismet/GameplayStatics.h"
-#include "NavigationSystem.h"
 
 APlayerCamera::APlayerCamera()
 {
@@ -30,16 +26,16 @@ APlayerCamera::APlayerCamera()
 	TargetCameraDistanceFromFocusPoint = CalculateAlphaFromCameraGroundDistance(MinCameraDistanceFromFocusPoint, MaxCameraDistanceFromFocusPoint);
 }
 
-float APlayerCamera::CalculateAlphaFromCameraGroundDistance(float MinValue, float MaxValue)
+float APlayerCamera::CalculateAlphaFromCameraGroundDistance(const float MinValue, const float MaxValue)
 {
-	float MaxDistance = MaxCameraHeight - MinCameraHeight;
-	float CurrentDistance = CameraHeight - MinCameraHeight;
-	float Alpha = CurrentDistance / MaxDistance;
+	const float MaxDistance = MaxCameraHeight - MinCameraHeight;
+	const float CurrentDistance = CameraHeight - MinCameraHeight;
+	const float Alpha = CurrentDistance / MaxDistance;
 
 	return FMath::Lerp(MinValue, MaxValue, Alpha);
 }
 
-void APlayerCamera::StartFollowing(AActor* ActorToFollow, bool bInDisableFollowWhenOnTarget)
+void APlayerCamera::StartFollowing(AActor* ActorToFollow, const bool bInDisableFollowWhenOnTarget)
 {
 	FollowTarget = ActorToFollow;
 	bDisableFollowWhenOnTarget = bInDisableFollowWhenOnTarget;
@@ -63,9 +59,9 @@ void APlayerCamera::BeginPlay()
 	}
 }
 
-void APlayerCamera::InterpCameraVerticalMove(float DeltaSeconds, float TargetGroundDistance)
+void APlayerCamera::InterpCameraVerticalMove(const float DeltaSeconds, const float TargetGroundDistance)
 {
-	float InterpResult = FMath::FInterpTo(GetActorLocation().Z, TargetGroundDistance, DeltaSeconds, VerticalMovementSpeed);
+	const float InterpResult = FMath::FInterpTo(GetActorLocation().Z, TargetGroundDistance, DeltaSeconds, VerticalMovementSpeed);
 	FVector CameraLocationToSet = GetActorLocation();
 	CameraLocationToSet.Z = InterpResult;
 	SetActorLocation(CameraLocationToSet);
@@ -89,11 +85,11 @@ void APlayerCamera::TraceGround(float DeltaSeconds)
 	}
 }
 
-void APlayerCamera::Rotate(float DeltaSeconds)
+void APlayerCamera::Rotate(const float DeltaSeconds)
 {
-	float NewPitchRotation = FMath::FInterpTo(GetControlRotation().Pitch, TargetCameraPitchRotation, DeltaSeconds, PitchRotationSpeed);
+	const float NewPitchRotation = FMath::FInterpTo(GetControlRotation().Pitch, TargetCameraPitchRotation, DeltaSeconds, PitchRotationSpeed);
 
-	float NewYawRotation = FMath::FInterpTo(GetControlRotation().Yaw, GetControlRotation().Yaw + YawInputValue, DeltaSeconds, YawRotationSpeed);
+	const float NewYawRotation = FMath::FInterpTo(GetControlRotation().Yaw, GetControlRotation().Yaw + YawInputValue, DeltaSeconds, YawRotationSpeed);
 
 	AController* OwnController = GetController();
 	if (OwnController)
@@ -103,22 +99,22 @@ void APlayerCamera::Rotate(float DeltaSeconds)
 	CameraRootComponent->SetWorldRotation(FRotator(CameraRootComponent->GetComponentRotation().Pitch, NewYawRotation, 0));
 }
 
-void APlayerCamera::MoveToRoot(float DeltaSeconds)
+void APlayerCamera::MoveToRoot(const float DeltaSeconds)
 {
 	FVector CameraLocation = Camera->GetRelativeLocation();
-	float NewCameraDistance = FMath::FInterpTo(CameraLocation.X, TargetCameraDistanceFromFocusPoint, DeltaSeconds, CameraToRootSpeed);
+	const float NewCameraDistance = FMath::FInterpTo(CameraLocation.X, TargetCameraDistanceFromFocusPoint, DeltaSeconds, CameraToRootSpeed);
 	CameraLocation.X = NewCameraDistance;
 	Camera->SetRelativeLocation(CameraLocation);
 }
 
-void APlayerCamera::Follow(float DeltaSeconds)
+void APlayerCamera::Follow(const float DeltaSeconds)
 {
 	if (FollowTarget)
 	{
 		FVector TargetLocation = FollowTarget->GetActorLocation();
 		TargetLocation.Z = GetActorLocation().Z;
 
-		FVector NewCameraLocation = FMath::VInterpTo(GetActorLocation(), TargetLocation, DeltaSeconds, FollowSpeed);
+		const FVector NewCameraLocation = FMath::VInterpTo(GetActorLocation(), TargetLocation, DeltaSeconds, FollowSpeed);
 		SetActorLocation(NewCameraLocation);
 
 		if (bDisableFollowWhenOnTarget && TargetLocation.Equals(GetActorLocation(), 10.f))
@@ -128,7 +124,7 @@ void APlayerCamera::Follow(float DeltaSeconds)
 	}
 }
 
-void APlayerCamera::Tick(float DeltaSeconds)
+void APlayerCamera::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
@@ -150,7 +146,7 @@ void APlayerCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (!PlayerController)
 	{
 		return;
@@ -186,7 +182,7 @@ void APlayerCamera::CameraMoveVertical(const FInputActionValue& InputActionValue
 	{
 		const float InputValue = InputActionValue.Get<float>();
 
-		float CameraVerticalMovementStep = (MaxCameraHeight - MinCameraHeight) / CameraVerticalMovementStepCount;
+		const float CameraVerticalMovementStep = (MaxCameraHeight - MinCameraHeight) / CameraVerticalMovementStepCount;
 
 		CameraHeight = FMath::Clamp(CameraHeight + CameraVerticalMovementStep * -InputValue, MinCameraHeight, MaxCameraHeight);
 

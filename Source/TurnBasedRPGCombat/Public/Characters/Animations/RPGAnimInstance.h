@@ -5,25 +5,9 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "GameplayTagContainer.h"
-#include "CharacterProgression/GameStat.h"
+#include "Utility/TurnBasedTypes.h"
 #include "RPGAnimInstance.generated.h"
 
-
-
-USTRUCT()
-struct FAbilityStateAnimations
-{
-	GENERATED_BODY()
-public:
-	FAbilityStateAnimations() = default;
-
-	UPROPERTY()
-	UAnimSequence* AbilityStart = nullptr;
-	UPROPERTY()
-	UAnimSequence* AbilityReady = nullptr;
-	UPROPERTY()
-	UAnimSequence* AbilityCancel = nullptr;
-};
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGameplayTagsChanged, const FGameplayTagContainer&, GameplayTags);
 
@@ -34,6 +18,7 @@ UCLASS()
 class TURNBASEDRPGCOMBAT_API URPGAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
+
 public:
 	void SetAbilityAnimations(const FAbilityStateAnimations& AbilityAnimations);
 	virtual void NativeInitializeAnimation() override;

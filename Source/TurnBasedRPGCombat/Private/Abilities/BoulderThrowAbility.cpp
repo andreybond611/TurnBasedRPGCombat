@@ -2,7 +2,6 @@
 
 #include "Abilities/BoulderThrowAbility.h"
 
-#include "Abilities/Effects/OnFireEffect.h"
 #include "Abilities/Projectiles/BoulderProjectile.h"
 #include "Abilities/TargetTypes/ProjectileRadiusTarget.h"
 #include "CharacterProgression/StatsComponent.h"
@@ -17,7 +16,7 @@ void UBoulderThrowAbility::ReadyAbility()
 {
 	Super::ReadyAbility();
 
-	auto ProjectileRadiusTarget = Cast<UProjectileRadiusTarget>(GetTargetState());
+	const auto ProjectileRadiusTarget = Cast<UProjectileRadiusTarget>(GetTargetState());
 	if (ensure(ProjectileRadiusTarget))
 	{
 		BoulderRadius = ProjectileRadiusTarget->GetProjectileRadius();
@@ -51,11 +50,11 @@ void UBoulderThrowAbility::PostEditChangeProperty(FPropertyChangedEvent& Propert
 {
 	Super::PostEditChangeProperty(PropertyChangedEvent);
 
-	FName ChangedPropertyName = PropertyChangedEvent.GetPropertyName();
+	const FName ChangedPropertyName = PropertyChangedEvent.GetPropertyName();
 
 	if (ChangedPropertyName == GET_MEMBER_NAME_CHECKED(UBoulderThrowAbility, ImpactSize))
 	{
-		auto ProjectileRadiusTarget = Cast<UProjectileRadiusTarget>(GetTargetState());
+		const auto ProjectileRadiusTarget = Cast<UProjectileRadiusTarget>(GetTargetState());
 		if (ensure(ProjectileRadiusTarget))
 		{
 			ProjectileRadiusTarget->SetAOESphereRadius(ImpactSize);
@@ -66,7 +65,7 @@ void UBoulderThrowAbility::PostEditChangeProperty(FPropertyChangedEvent& Propert
 
 FVector UBoulderThrowAbility::GetProjectileVelocity()
 {
-	USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
+	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(Owner);
 	FVector OutTossVelocity;
@@ -89,17 +88,17 @@ void UBoulderThrowAbility::ProcessHits(const FVector& HitLocation, TArray<FHitRe
 		}
 	}
 
-	for (auto HitActor : HitActors)
+	for (const auto HitActor : HitActors)
 	{
-		float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
-		EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(HitLocation, HitActor);
+		const float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
+		const EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(HitLocation, HitActor);
 
 		FDamage Damage;
 		Damage.DamageNumber = DamageNumber;
 		Damage.HitDirection = HitDirection;
 		Damage.DamageType = EDamageType::Earth;
 
-		if (auto DamageableActor = Cast<IDamageable>(HitActor))
+		if (const auto DamageableActor = Cast<IDamageable>(HitActor))
 		{
 			DamageableActor->GetDamaged(Damage);
 		}
@@ -108,17 +107,17 @@ void UBoulderThrowAbility::ProcessHits(const FVector& HitLocation, TArray<FHitRe
 
 void UBoulderThrowAbility::BoulderHit(AActor* Actor, FVector HitLocation)
 {
-	auto SpawnedSurface = GetWorld()->SpawnActor<ARPGSurface>(*ImpactSurface, HitLocation, {});
+	const auto SpawnedSurface = GetWorld()->SpawnActor<ARPGSurface>(*ImpactSurface, HitLocation, {});
 	SpawnedSurface->SetSurfaceSize(ImpactSize);
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 	ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 	TArray<FHitResult> OutHitResults;
 
-	TArray<AActor*> ActorsToIgnore;
+	const TArray<AActor*> ActorsToIgnore;
 
-	bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(this, HitLocation, HitLocation, ImpactSize, ObjectTypes, false,
-																 ActorsToIgnore, EDrawDebugTrace::None, OutHitResults, true);
+	const bool bHit = UKismetSystemLibrary::SphereTraceMultiForObjects(this, HitLocation, HitLocation, ImpactSize, ObjectTypes, false,
+	                                                                   ActorsToIgnore, EDrawDebugTrace::None, OutHitResults, true);
 
 	if (bHit)
 	{
@@ -135,7 +134,7 @@ void UBoulderThrowAbility::ShootBoulder()
 		// Boulder collision with ground is ignored by default, so we should enable it when boulder is shot
 		Boulder->GetCollisionComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3/*Ground*/, ECR_Block);
 
-		FVector ProjectileVelocity = GetProjectileVelocity();
+		const FVector ProjectileVelocity = GetProjectileVelocity();
 		Boulder->GetProjectileMovement()->Velocity = ProjectileVelocity;
 		Boulder->SetProjectileOwner(Owner);
 		Boulder->OnProjectileHitDelegate.BindUObject(this, &UBoulderThrowAbility::BoulderHit);
@@ -147,7 +146,7 @@ void UBoulderThrowAbility::SpawnBoulder()
 	OnAnimNotifyExecuted.RemoveDynamic(this, &UBoulderThrowAbility::SpawnBoulder);
 	OnAnimNotifyExecuted.AddDynamic(this, &UBoulderThrowAbility::ShootBoulder);
 
-	USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
+	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 	FVector ProjectileSpawnLocation = ProjectileStart->GetComponentLocation();
 	ProjectileSpawnLocation.Z += InitialRelativeZ;
 

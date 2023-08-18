@@ -7,7 +7,7 @@
 
 void UWeaponHitNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
-	if (auto Character = Cast<ARPGCharacter>(MeshComp->GetOwner()))
+	if (const auto Character = Cast<ARPGCharacter>(MeshComp->GetOwner()))
 	{
 		Character->OnHitLanded.ExecuteIfBound();
 	}

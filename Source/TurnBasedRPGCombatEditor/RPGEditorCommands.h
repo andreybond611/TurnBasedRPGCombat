@@ -2,7 +2,6 @@
 #pragma once
 
 #include "Framework/Commands/Commands.h"
-#include "EditorStyleSet.h"
 #include "AlignmentEditorWindow/AlignmentEditorButtonStyle.h"
 
 class FRPGEditorCommands : public TCommands<FRPGEditorCommands>

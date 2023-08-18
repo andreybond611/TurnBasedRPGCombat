@@ -14,7 +14,7 @@ EBTNodeResult::Type UBTTask_ChooseAbility::ExecuteTask(UBehaviorTreeComponent& O
 	Desirabilities.Empty();
 	BehaviorTreeComponent = &OwnerComp;
 	AActor* Owner = OwnerComp.GetOwner();
-	AAIController* AIController = Cast<AAIController>(Owner);
+	const AAIController* AIController = Cast<AAIController>(Owner);
 	if (!AIController)
 	{
 		return EBTNodeResult::Aborted;
@@ -32,7 +32,7 @@ EBTNodeResult::Type UBTTask_ChooseAbility::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Aborted;
 	}
 
-	if (auto AbilityComponent = ControlledPawn->FindComponentByClass<UAbilityComponent>())
+	if (const auto AbilityComponent = ControlledPawn->FindComponentByClass<UAbilityComponent>())
 	{
 		TotalNumberOfAbilities = AbilityComponent->GetAllAbilities().Num();
 		AbilityCount = 0;
@@ -71,7 +71,7 @@ void UBTTask_ChooseAbility::ChooseAbility()
 {
 	float Highest = 0.f;
 	UAbility* TargetAbility = nullptr;
-	for (TTuple<UAbility*, float> Desirability : Desirabilities)
+	for (const TTuple<UAbility*, float> Desirability : Desirabilities)
 	{
 		if (Desirability.Value > Highest)
 		{
@@ -87,7 +87,7 @@ void UBTTask_ChooseAbility::ChooseAbility()
 	FinishLatentTask(*BehaviorTreeComponent, EBTNodeResult::Succeeded);
 }
 
-void UBTTask_ChooseAbility::AddDesirability(UAbility* Ability, float Weight)
+void UBTTask_ChooseAbility::AddDesirability(UAbility* Ability, const float Weight)
 {
 	AbilityCount++;
 	Desirabilities.Add(Ability, Weight);

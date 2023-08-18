@@ -17,7 +17,7 @@ void URPGAnimInstance::NativeInitializeAnimation()
 	OnGameplayTagsChanged.AddUniqueDynamic(this, &URPGAnimInstance::GameplayTagChanged);
 }
 
-void URPGAnimInstance::SetMovementAnimRate(float Rate)
+void URPGAnimInstance::SetMovementAnimRate(const float Rate)
 {
 	MovementAnimRate = Rate;
 }

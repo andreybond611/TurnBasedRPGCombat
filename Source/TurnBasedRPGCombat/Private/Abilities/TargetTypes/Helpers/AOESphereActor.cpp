@@ -3,7 +3,6 @@
 
 #include "Abilities/TargetTypes/Helpers/AOESphereActor.h"
 
-#include "Characters/RPGCharacter.h"
 #include "Components/SphereComponent.h"
 
 AAOESphereActor::AAOESphereActor()
@@ -18,7 +17,7 @@ AAOESphereActor::AAOESphereActor()
 
 }
 
-void AAOESphereActor::SetOverlapEnemy(bool bOverlap)
+void AAOESphereActor::SetOverlapEnemy(const bool bOverlap)
 {
 	if (bOverlap)
 	{

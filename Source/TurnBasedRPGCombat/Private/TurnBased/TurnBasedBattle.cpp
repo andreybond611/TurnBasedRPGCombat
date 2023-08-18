@@ -1,7 +1,6 @@
 // Copyright 2022 Andrei Bondarenko. All rights reserved
 
 #include "TurnBased/TurnBasedBattle.h"
-#include <Kismet/KismetSystemLibrary.h>
 #include "EngineUtils.h"
 #include "ActorComponents/TurnBasedComponent.h"
 #include "CharacterProgression/StatsComponent.h"
@@ -14,7 +13,7 @@ ATurnBasedBattle::ATurnBasedBattle()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ATurnBasedBattle::FillTurnQueues(TArray<TScriptInterface<ITBBattleParticipant>> QueuedParticipants)
+void ATurnBasedBattle::FillTurnQueues(const TArray<TScriptInterface<ITBBattleParticipant>> QueuedParticipants)
 {
 	CurrentTurnQueue = QueuedParticipants;
 	NextTurnQueue = QueuedParticipants;
@@ -25,10 +24,10 @@ void ATurnBasedBattle::FillTurnQueues(TArray<TScriptInterface<ITBBattleParticipa
 
 void ATurnBasedBattle::ShuffleParticipants(TArray<TScriptInterface<ITBBattleParticipant>>& Participants)
 {
-	int32 LastIndex = Participants.Num() - 1;
+	const int32 LastIndex = Participants.Num() - 1;
 	for (int32 i = 0; i <= LastIndex; ++i)
 	{
-		int32 Index = FMath::RandRange(i, LastIndex);
+		const int32 Index = FMath::RandRange(i, LastIndex);
 		if (i != Index)
 		{
 			Participants.Swap(i, Index);
@@ -44,8 +43,8 @@ int32 Dice6Roll()
 bool FInitiativeLess::operator()(const TScriptInterface<ITBBattleParticipant>& Left,
 								 const TScriptInterface<ITBBattleParticipant>& Right) const
 {
-	int32 LeftInitiative = Left->Stats()->Get(SN_Initiative) + Dice6Roll();
-	int32 RightInitiative = Right->Stats()->Get(SN_Initiative) + Dice6Roll();
+	const int32 LeftInitiative = Left->Stats()->Get(SN_Initiative) + Dice6Roll();
+	const int32 RightInitiative = Right->Stats()->Get(SN_Initiative) + Dice6Roll();
 	return LeftInitiative < RightInitiative;
 }
 
@@ -59,7 +58,7 @@ void ATurnBasedBattle::Start()
 
 	FillTurnQueues(BattleParticipants);
 
-	for (FBattleParticipant BattleParticipant : BattleParticipants)
+	for (const FBattleParticipant BattleParticipant : BattleParticipants)
 	{
 		BattleParticipant->GetTurnBasedComponent()->EnterBattle(this);
 	}
@@ -71,7 +70,7 @@ void ATurnBasedBattle::End()
 {
 }
 
-void ATurnBasedBattle::AddParticipant(TScriptInterface<ITBBattleParticipant> Participant)
+void ATurnBasedBattle::AddParticipant(const TScriptInterface<ITBBattleParticipant> Participant)
 {
 	if (BattleParticipants.Contains(Participant))
 	{
@@ -83,7 +82,7 @@ void ATurnBasedBattle::AddParticipant(TScriptInterface<ITBBattleParticipant> Par
 
 void ATurnBasedBattle::AddParticipants(TArray<TScriptInterface<ITBBattleParticipant>> Participants)
 {
-	for (FBattleParticipant Character : Participants)
+	for (const FBattleParticipant Character : Participants)
 	{
 		AddParticipant(Character);
 	}
@@ -104,7 +103,7 @@ void ATurnBasedBattle::NextParticipant()
 		OnAddNextTurnQueue.Broadcast(CurrentTurnQueue, NextTurnQueue);
 	}
 
-	FBattleParticipant NextParticipant = CurrentTurnQueue.Pop();
+	const FBattleParticipant NextParticipant = CurrentTurnQueue.Pop();
 	UTurnBasedComponent* TurnBasedComponent = NextParticipant->GetTurnBasedComponent();
 	TurnBasedComponent->StartTurn();
 	SetCurrentParticipant(NextParticipant);
@@ -113,10 +112,10 @@ void ATurnBasedBattle::NextParticipant()
 }
 
 TArray<TScriptInterface<ITBBattleParticipant>> ATurnBasedBattle::GetParticipantsWithAttitudeTo(AActor* AttitudeCheckActor,
-																									  ETeamAttitude::Type Attitude) const
+                                                                                               const ETeamAttitude::Type Attitude) const
 {
 	TArray<TScriptInterface<ITBBattleParticipant>> Result;
-	if (IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(AttitudeCheckActor))
+	if (const IGenericTeamAgentInterface* TeamAgent = Cast<IGenericTeamAgentInterface>(AttitudeCheckActor))
 	{
 		for (FBattleParticipant BattleParticipant : BattleParticipants)
 		{

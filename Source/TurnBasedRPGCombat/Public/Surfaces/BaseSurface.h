@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "UObject/NoExportTypes.h"
 #include "BaseSurface.generated.h"
 
 class ARPGSurface;

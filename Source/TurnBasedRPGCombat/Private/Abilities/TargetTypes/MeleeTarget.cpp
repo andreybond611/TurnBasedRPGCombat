@@ -2,18 +2,12 @@
 
 #include "Abilities/TargetTypes/MeleeTarget.h"
 
-#include "EnhancedInputSubsystems.h"
-#include "NavigationSystem.h"
 #include "Abilities/Ability.h"
 #include "Abilities/AbilityComponent.h"
 #include "Abilities/MoveAbility.h"
 #include "Abilities/TargetTypes/MoveTarget.h"
-#include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
-#include "Components/DecalComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "UnrealFramework/RPGPlayerController.h"
-#include "Utility/TurnBasedUtility.h"
 
 UMeleeTarget::UMeleeTarget()
 {
@@ -24,7 +18,7 @@ void UMeleeTarget::StartTargeting(ARPGPlayerController* InPlayerController)
 {
 	Super::StartTargeting(InPlayerController);
 
-	auto AbilityComponent =  InPlayerController->GetControlledCharacter()->FindComponentByClass<UAbilityComponent>();
+	const auto AbilityComponent =  InPlayerController->GetControlledCharacter()->FindComponentByClass<UAbilityComponent>();
 	if (ensure(AbilityComponent))
 	{
 		MoveTarget = Cast<UMoveTarget>(AbilityComponent->GetMoveAbility()->GetTargetState());

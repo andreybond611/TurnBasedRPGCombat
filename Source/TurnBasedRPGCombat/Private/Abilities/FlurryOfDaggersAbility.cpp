@@ -3,8 +3,6 @@
 #include "Abilities/FlurryOfDaggersAbility.h"
 
 #include "Abilities/Projectiles/ProjectileActor.h"
-#include "Abilities/TargetTypes/ArcTarget.h"
-#include "Abilities/TargetTypes/RangeTarget.h"
 #include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
@@ -13,7 +11,7 @@
 
 void UFlurryOfDaggersAbility::PlayFlurryAnimation()
 {
-	float AnimationLength = Owner->PlayAnimMontage(DaggerThrowAnimations[AnimationIndex]);
+	const float AnimationLength = Owner->PlayAnimMontage(DaggerThrowAnimations[AnimationIndex]);
 	AnimationIndex = AnimationIndex % DaggerThrowAnimations.Num();
 	AnimationIndex++;
 	DaggerThrowCount++;
@@ -53,7 +51,7 @@ void UFlurryOfDaggersAbility::ThrowDagger()
 
 void UFlurryOfDaggersAbility::SpawnProjectile()
 {
-	USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
+	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 	FActorSpawnParameters Params;
 	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	AProjectileActor* Projectile = GetWorld()->SpawnActor<AProjectileActor>(*ProjectileClass, ProjectileStart->GetComponentLocation(),
@@ -69,7 +67,7 @@ void UFlurryOfDaggersAbility::SpawnProjectile()
 
 FVector UFlurryOfDaggersAbility::GetTossVelocity()
 {
-	USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
+	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(Owner);
 	FVector OutTossVelocity;
@@ -82,10 +80,10 @@ FVector UFlurryOfDaggersAbility::GetTossVelocity()
 
 void UFlurryOfDaggersAbility::ProjectileHit(AActor* HitActor, FVector Location)
 {
-	if (auto Damageable = Cast<IDamageable>(HitActor))
+	if (const auto Damageable = Cast<IDamageable>(HitActor))
 	{
-		float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
-		EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Location, HitActor);
+		const float DamageNumber = Owner->Stats()->Get(SN_Damage) * DamageMultiplier;
+		const EHitDirection HitDirection = UTurnBasedUtility::FindHitDirection(Location, HitActor);
 
 		FDamage Damage;
 		Damage.DamageNumber = DamageNumber;

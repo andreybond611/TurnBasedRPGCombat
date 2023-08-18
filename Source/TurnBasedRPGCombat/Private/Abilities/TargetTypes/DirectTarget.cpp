@@ -6,7 +6,7 @@
 
 void UDirectTarget::TickTargetAbility(const FHitResult& CursorHitResult)
 {
-	float DistanceToTarget = FVector::Distance(CursorHitResult.Location, ControlledCharacter->GetLocation());
+	const float DistanceToTarget = FVector::Distance(CursorHitResult.Location, ControlledCharacter->GetLocation());
 	bEnableRotating = DistanceToTarget > MinDistanceForRotation;
 
 	AActor* HitActor = CursorHitResult.GetActor();
@@ -17,10 +17,10 @@ void UDirectTarget::TickTargetAbility(const FHitResult& CursorHitResult)
 	{
 		Target.Actor = HitActor;
 
-		if (IGenericTeamAgentInterface* OwnerTeamAgent = Cast<IGenericTeamAgentInterface>(AbilityOwner))
+		if (const IGenericTeamAgentInterface* OwnerTeamAgent = Cast<IGenericTeamAgentInterface>(AbilityOwner))
 		{
-			ETeamAttitude::Type Attitude = OwnerTeamAgent->GetTeamAttitudeTowards(*HitActor);
-			EOutlineColor OutlineColor = UTurnBasedUtility::AttitudeToOutlineColor(Attitude);
+			const ETeamAttitude::Type Attitude = OwnerTeamAgent->GetTeamAttitudeTowards(*HitActor);
+			const EOutlineColor OutlineColor = UTurnBasedUtility::AttitudeToOutlineColor(Attitude);
 			EnableOutline(HitActor, OutlineColor);
 		}
 	}

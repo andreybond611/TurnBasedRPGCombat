@@ -36,7 +36,7 @@ void ARPGSurface::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (OtherActor->IsA<ARPGSurface>())
 	{
-		auto OverlappingSurface = CastChecked<ARPGSurface>(OtherActor);
+		const auto OverlappingSurface = CastChecked<ARPGSurface>(OtherActor);
 		OverlappingSurfaces.Add(OverlappingSurface);
 		Surface->OnSurfaceIntersect(OverlappingSurface);
 		return;
@@ -50,13 +50,13 @@ void ARPGSurface::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor*
 	Surface->OnActorLeft(OtherActor);
 }
 
-void ARPGSurface::SetSurfaceSize(float InSize)
+void ARPGSurface::SetSurfaceSize(const float InSize)
 {
 	SurfaceSize = InSize;
 	CalculateSize();
 }
 
-void ARPGSurface::SetSurfaceType(TSubclassOf<UBaseSurface> InSurfaceType)
+void ARPGSurface::SetSurfaceType(const TSubclassOf<UBaseSurface> InSurfaceType)
 {
 	static const FName DecalShapeParameterName = "DecalShape";
 
@@ -79,7 +79,7 @@ void ARPGSurface::SetSurfaceType(TSubclassOf<UBaseSurface> InSurfaceType)
 void ARPGSurface::CalculateSize()
 {
 	Decal->DecalSize = FVector{200.f, SurfaceSize, SurfaceSize};
-	float MeshScale = SurfaceSize / ShapeSize;
+	const float MeshScale = SurfaceSize / ShapeSize;
 	CollisionShape->SetRelativeScale3D(FVector{MeshScale, MeshScale, 1.f});
 }
 
@@ -98,7 +98,7 @@ void ARPGSurface::OnConstruction(const FTransform& Transform)
 	CalculateSize();
 }
 
-void ARPGSurface::Tick(float DeltaTime)
+void ARPGSurface::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

@@ -24,9 +24,9 @@ void UShieldAbility::RemoveFromCharacter(ARPGCharacter* Character)
 
 void UShieldAbility::ApplyEffect()
 {
-	if (auto ShieldEffect = NewObject<UEffect>(this, *AppliedEffectClass))
+	if (const auto ShieldEffect = NewObject<UEffect>(this, *AppliedEffectClass))
 	{
-		if (auto EffectComponent = GetTarget().Actor->FindComponentByClass<UEffectComponent>())
+		if (const auto EffectComponent = GetTarget().Actor->FindComponentByClass<UEffectComponent>())
 		{
 			ShieldEffect->SetTurnCount(Turns);
 			EffectComponent->AddEffect(ShieldEffect);

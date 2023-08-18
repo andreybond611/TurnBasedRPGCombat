@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "Utility/TurnBasedTypes.h"
 #include "GameStat.generated.h"
 
@@ -55,9 +54,9 @@ public:
 	void RemoveStatAsMaxValue();
 
 public:
-	void SetMaxValue(float InMaxValue) { MaxValue = InMaxValue; }
-	void SetMinValue(float InMinValue) { MinValue = InMinValue; }
-	void SetMinMaxValue(float InMaxValue, float InMinValue)
+	void SetMaxValue(const float InMaxValue) { MaxValue = InMaxValue; }
+	void SetMinValue(const float InMinValue) { MinValue = InMinValue; }
+	void SetMinMaxValue(const float InMaxValue, const float InMinValue)
 	{
 		MaxValue = InMaxValue;
 		MinValue = InMinValue;

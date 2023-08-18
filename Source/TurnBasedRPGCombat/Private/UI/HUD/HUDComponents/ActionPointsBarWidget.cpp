@@ -4,7 +4,6 @@
 #include "CharacterProgression/GameStat.h"
 #include "Components/HorizontalBox.h"
 #include "Components/ProgressBar.h"
-#include "Components/TextBlock.h"
 #include "UI/HUD/HUDComponents/ActionPointWidget.h"
 
 #define LOCTEXT_NAMESPACE "UI"
@@ -34,13 +33,13 @@ void UActionPointsBarWidget::RemoveBinding()
 	MaxAPStat = nullptr;
 }
 
-void UActionPointsBarWidget::SetSpendingIndication(int32 APCount)
+void UActionPointsBarWidget::SetSpendingIndication(const int32 APCount)
 {
 	bSpendingIndication = true;
 
-	float IndicatingAPCost = FMath::Clamp(APCount, 0.f, APStat->Get());
-	int32 SpentAP = MaxAPStat->Get() - APStat->Get();
-	int32 LowerBound = ActionPointWidgets.Num() - IndicatingAPCost - SpentAP;
+	const float IndicatingAPCost = FMath::Clamp(APCount, 0.f, APStat->Get());
+	const int32 SpentAP = MaxAPStat->Get() - APStat->Get();
+	const int32 LowerBound = ActionPointWidgets.Num() - IndicatingAPCost - SpentAP;
 
 	for (int32 i = ActionPointWidgets.Num() - 1; i >= LowerBound; --i)
 	{
@@ -50,7 +49,7 @@ void UActionPointsBarWidget::SetSpendingIndication(int32 APCount)
 		}
 	}
 
-	int32 UpperBound = ActionPointWidgets.Num() - IndicatingAPCost - SpentAP;
+	const int32 UpperBound = ActionPointWidgets.Num() - IndicatingAPCost - SpentAP;
 
 	for (int32 i = 0; i < UpperBound; ++i)
 	{
@@ -61,7 +60,7 @@ void UActionPointsBarWidget::SetSpendingIndication(int32 APCount)
 	}
 }
 
-void UActionPointsBarWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+void UActionPointsBarWidget::NativeTick(const FGeometry& MyGeometry, const float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
@@ -84,7 +83,7 @@ void UActionPointsBarWidget::OnMaxAPChange(float MaxAPValue)
 	OnAPChange(APStat->Get());
 }
 
-void UActionPointsBarWidget::OnAPChange(float APValue)
+void UActionPointsBarWidget::OnAPChange(const float APValue)
 {
 	if (!ActionPointWidgetClass)
 	{
@@ -93,7 +92,7 @@ void UActionPointsBarWidget::OnAPChange(float APValue)
 
 	if (MaxAPStat->Get() != 0.f) //-V550
 	{
-		int32 APValueInt = FMath::RoundToInt32(APValue);
+		const int32 APValueInt = FMath::RoundToInt32(APValue);
 
 		ActionPointsBar->ClearChildren();
 		ActionPointWidgets.Empty();

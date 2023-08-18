@@ -10,17 +10,17 @@
 
 void USlowedEffect::ApplyTo(AActor* InActor)
 {
-	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(InActor))
+	if (const auto GameplayTagHolder = Cast<IGameplayTagHolder>(InActor))
 	{
 		GameplayTagHolder->AddTag(FGameplayTag::RequestGameplayTag("Effect.Debuff.Slowed"));
 	}
 
-	if (auto Stats = InActor->FindComponentByClass<UStatsComponent>())
+	if (const auto Stats = InActor->FindComponentByClass<UStatsComponent>())
 	{
 		Stats->AddMultiplier(SN_MaxWalkPerAP, -0.5f);
 	}
 
-	if (auto MovementComponent = InActor->FindComponentByClass<URPGMovementComponent>())
+	if (const auto MovementComponent = InActor->FindComponentByClass<URPGMovementComponent>())
 	{
 		MovementComponent->GetWalkSpeedStat()->AddMultiplier(MovementMultiplier);
 	}
@@ -28,17 +28,17 @@ void USlowedEffect::ApplyTo(AActor* InActor)
 
 void USlowedEffect::Remove()
 {
-	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(TargetActor))
+	if (const auto GameplayTagHolder = Cast<IGameplayTagHolder>(TargetActor))
 	{
 		GameplayTagHolder->RemoveTag(FGameplayTag::RequestGameplayTag("Effect.Debuff.Slowed"));
 	}
 
-	if (auto Stats = TargetActor->FindComponentByClass<UStatsComponent>())
+	if (const auto Stats = TargetActor->FindComponentByClass<UStatsComponent>())
 	{
 		Stats->AddMultiplier(SN_MaxWalkPerAP, 0.5f);
 	}
 
-	if (auto MovementComponent = TargetActor->FindComponentByClass<URPGMovementComponent>())
+	if (const auto MovementComponent = TargetActor->FindComponentByClass<URPGMovementComponent>())
 	{
 		MovementComponent->GetWalkSpeedStat()->AddMultiplier(-MovementMultiplier);
 	}
@@ -46,7 +46,7 @@ void USlowedEffect::Remove()
 
 bool USlowedEffect::CanRemove()
 {
-	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(TargetActor))
+	if (const auto GameplayTagHolder = Cast<IGameplayTagHolder>(TargetActor))
 	{
 		if (GameplayTagHolder->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("Surface.Oil")))
 		{

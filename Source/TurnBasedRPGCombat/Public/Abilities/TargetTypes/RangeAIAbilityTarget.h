@@ -16,7 +16,7 @@ struct FRangeAttackLocations
 	GENERATED_BODY()
 
 	FRangeAttackLocations() = default;
-	FRangeAttackLocations(bool bInIsValid)
+	FRangeAttackLocations(const bool bInIsValid)
 		: bIsValid(bInIsValid){};
 
 	static FRangeAttackLocations Invalid;

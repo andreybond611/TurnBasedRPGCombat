@@ -17,11 +17,11 @@ const URPGSettings* URPGSettings::Get()
 	return GetDefault<URPGSettings>();
 }
 
-ETeamAttitude::Type URPGSettings::GetAttitude(FGenericTeamId Of, FGenericTeamId Towards)
+ETeamAttitude::Type URPGSettings::GetAttitude(const FGenericTeamId Of, const FGenericTeamId Towards)
 {
 	const TArray<FTeamAttitude>& TeamAttitudes = Get()->TeamAttitudes;
-	bool bOfValid = TeamAttitudes.IsValidIndex(Of.GetId());
-	bool bTowardsValid = TeamAttitudes.IsValidIndex(Towards.GetId());
+	const bool bOfValid = TeamAttitudes.IsValidIndex(Of.GetId());
+	const bool bTowardsValid = TeamAttitudes.IsValidIndex(Towards.GetId());
 
 	if (bOfValid && bTowardsValid)
 	{

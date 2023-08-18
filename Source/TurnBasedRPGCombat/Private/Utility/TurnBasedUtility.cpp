@@ -6,14 +6,14 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "GenericPlatform/GenericPlatform.h"
 
-FVector UTurnBasedUtility::GetLocationOnPathNearActor(UNavigationPath* PathToActor, float DistanceToActor)
+FVector UTurnBasedUtility::GetLocationOnPathNearActor(UNavigationPath* PathToActor, const float DistanceToActor)
 {
-	TArray<FNavPathPoint> PathPoints = PathToActor->GetPath()->GetPathPoints();
-	TArray<FLineSegment> PathSegments = GetLineSegmentsFromPathPoints(PathPoints, true);
+	const TArray<FNavPathPoint> PathPoints = PathToActor->GetPath()->GetPathPoints();
+	const TArray<FLineSegment> PathSegments = GetLineSegmentsFromPathPoints(PathPoints, true);
 	return GetLocationWithDistanceAlongPathSegments(PathSegments, DistanceToActor);
 }
 
-TArray<FLineSegment> UTurnBasedUtility::GetLineSegmentsFromPathPoints(const TArray<FNavPathPoint>& InPathPoints, bool bReversed)
+TArray<FLineSegment> UTurnBasedUtility::GetLineSegmentsFromPathPoints(const TArray<FNavPathPoint>& InPathPoints, const bool bReversed)
 {
 	TArray<FLineSegment> PathSegments;
 	FNavPathPoint PreviousPoint = FVector::Zero();
@@ -48,7 +48,7 @@ TArray<FLineSegment> UTurnBasedUtility::GetLineSegmentsFromPathPoints(const TArr
 	return PathSegments;
 }
 
-FVector UTurnBasedUtility::GetLocationWithDistanceAlongPathSegments(const TArray<FLineSegment>& PathSegments, float Distance)
+FVector UTurnBasedUtility::GetLocationWithDistanceAlongPathSegments(const TArray<FLineSegment>& PathSegments, const float Distance)
 {
 	FVector SearchedLocation;
 	float SearchedDistance = Distance;
@@ -56,7 +56,7 @@ FVector UTurnBasedUtility::GetLocationWithDistanceAlongPathSegments(const TArray
 	{
 		if (Segment.Vector().Length() > SearchedDistance)
 		{
-			FVector NormalizedSegment = Segment.Vector().GetSafeNormal();
+			const FVector NormalizedSegment = Segment.Vector().GetSafeNormal();
 			SearchedLocation = NormalizedSegment * SearchedDistance + Segment.LineStart;
 			break;
 		}
@@ -66,7 +66,7 @@ FVector UTurnBasedUtility::GetLocationWithDistanceAlongPathSegments(const TArray
 	return SearchedLocation;
 }
 
-EOutlineColor UTurnBasedUtility::AttitudeToOutlineColor(ETeamAttitude::Type Attitude)
+EOutlineColor UTurnBasedUtility::AttitudeToOutlineColor(const ETeamAttitude::Type Attitude)
 {
 	switch (Attitude)
 	{
@@ -88,9 +88,9 @@ EHitDirection UTurnBasedUtility::FindHitDirection(FVector AttackLocation, AActor
 	FVector TargetLocation = Target->GetActorLocation();
 	TargetLocation.Z = 0;
 
-	FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(TargetLocation, AttackLocation);
-	FRotator TargetRotation = Target->GetActorRotation();
-	FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(LookAtRotation, TargetRotation);
+	const FRotator LookAtRotation = UKismetMathLibrary::FindLookAtRotation(TargetLocation, AttackLocation);
+	const FRotator TargetRotation = Target->GetActorRotation();
+	const FRotator DeltaRotation = UKismetMathLibrary::NormalizedDeltaRotator(LookAtRotation, TargetRotation);
 
 	if (DeltaRotation.Yaw > -45.f && DeltaRotation.Yaw < 45.f)
 	{
@@ -108,7 +108,7 @@ EHitDirection UTurnBasedUtility::FindHitDirection(FVector AttackLocation, AActor
 }
 
 // todo: refactor it somehow idk
-TArray<FVector> UTurnBasedUtility::FindPointsAlongPath(UNavigationPath* NavigationPath, float DistanceBetweenPoints)
+TArray<FVector> UTurnBasedUtility::FindPointsAlongPath(UNavigationPath* NavigationPath, const float DistanceBetweenPoints)
 {
 	TArray<FVector> Result;
 	float SumOfLengths = 0.f;
@@ -130,7 +130,7 @@ TArray<FVector> UTurnBasedUtility::FindPointsAlongPath(UNavigationPath* Navigati
 		while (SumOfLengths >= DistanceBetweenPoints)
 		{
 			FVector Normal = VectorToNextPathPoint.GetSafeNormal();
-			float DistanceToNextPointAlongPath = DistanceBetweenPoints - (SumOfLengths - ToNextPathPointLength);
+			const float DistanceToNextPointAlongPath = DistanceBetweenPoints - (SumOfLengths - ToNextPathPointLength);
 			FVector PointAlongPath = Normal * DistanceToNextPointAlongPath + PreviousPoint;
 			SumOfLengths -= DistanceBetweenPoints;
 			Result.Add(PointAlongPath);
@@ -146,7 +146,7 @@ TArray<FVector> UTurnBasedUtility::FindPointsAlongPath(UNavigationPath* Navigati
 	return Result;
 }
 
-FName UTurnBasedUtility::DamageTypeToResistanceStat(EDamageType DamageType)
+FName UTurnBasedUtility::DamageTypeToResistanceStat(const EDamageType DamageType)
 {
 	switch (DamageType)
 	{
@@ -159,7 +159,7 @@ FName UTurnBasedUtility::DamageTypeToResistanceStat(EDamageType DamageType)
 	}
 }
 
-FString UTurnBasedUtility::ObjectFlagToString(EObjectFlags ObjectFlags)
+FString UTurnBasedUtility::ObjectFlagToString(const EObjectFlags ObjectFlags)
 {
 	static TArray<FString> FlagNames = {
 		"RF_NoFlags", ///< No flags, used to avoid a cast

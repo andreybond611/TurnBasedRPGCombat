@@ -28,7 +28,7 @@ public:
 
 	FOnFoundDesirability OnDesirabilityFound;
 
-	void SetMaxRange(float InMaxRange) { MaxRange = InMaxRange; }
+	void SetMaxRange(const float InMaxRange) { MaxRange = InMaxRange; }
 	FTarget GetTarget() const { return Target; }
 	bool GetIsAsync() const { return bAsync; }
 

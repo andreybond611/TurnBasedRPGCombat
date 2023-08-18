@@ -2,7 +2,6 @@
 
 #include "ActorComponents/TurnBasedComponent.h"
 #include "TurnBased/TurnBasedBattle.h"
-#include "Characters/RPGCharacter.h"
 
 UTurnBasedComponent::UTurnBasedComponent()
 {

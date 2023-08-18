@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AbilityTargetState.h"
-#include "NavigationPath.h"
 #include "MeleeTarget.generated.h"
 
 

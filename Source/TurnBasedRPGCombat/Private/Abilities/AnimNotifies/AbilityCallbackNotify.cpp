@@ -9,9 +9,9 @@
 
 void UAbilityCallbackNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
-	if (auto* Character = Cast<ARPGCharacter>(MeshComp->GetOwner()))
+	if (const auto* Character = Cast<ARPGCharacter>(MeshComp->GetOwner()))
 	{
-		UAbility* ExecutingAbility = Character->GetAbilityComponent()->FindAbility(CallbackAbility);
+		const UAbility* ExecutingAbility = Character->GetAbilityComponent()->FindAbility(CallbackAbility);
 		if (ensure(ExecutingAbility))
 		{
 			ExecutingAbility->OnAnimNotifyExecuted.Broadcast();

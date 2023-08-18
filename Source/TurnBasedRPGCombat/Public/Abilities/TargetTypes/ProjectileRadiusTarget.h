@@ -27,7 +27,7 @@ public:
 
 	FVector GetTossVelocity() const { return ArcTarget->GetTossVelocity(); }
 	float GetProjectileRadius() const { return ArcTarget->GetProjectileRadius();  }
-	void SetAOESphereRadius(float InRadius) { AOESphereRadius = InRadius; }
+	void SetAOESphereRadius(const float InRadius) { AOESphereRadius = InRadius; }
 
 private:
 	UPROPERTY(EditAnywhere, Instanced)

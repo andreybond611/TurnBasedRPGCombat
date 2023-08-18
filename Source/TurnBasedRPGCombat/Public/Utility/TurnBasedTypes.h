@@ -10,9 +10,9 @@ struct FLineSegment
 	FVector LineStart;
 	FVector LineEnd;
 
-	FVector Vector()const
+	FVector Vector() const
 	{
-		FVector SegmentVector = LineEnd - LineStart;
+		const FVector SegmentVector = LineEnd - LineStart;
 		return SegmentVector;
 	}
 };
@@ -40,7 +40,7 @@ USTRUCT(BlueprintType)
 struct FTarget
 {
 	GENERATED_BODY()
-	
+
 	FVector Location = FVector::ZeroVector;
 	UPROPERTY()
 	AActor* Actor = nullptr;
@@ -124,4 +124,19 @@ enum class EPreferredDistance : uint8
 {
 	Closest,
 	Farthest
+};
+
+USTRUCT()
+struct FAbilityStateAnimations
+{
+	GENERATED_BODY()
+public:
+	FAbilityStateAnimations() = default;
+
+	UPROPERTY()
+	UAnimSequence* AbilityStart = nullptr;
+	UPROPERTY()
+	UAnimSequence* AbilityReady = nullptr;
+	UPROPERTY()
+	UAnimSequence* AbilityCancel = nullptr;
 };

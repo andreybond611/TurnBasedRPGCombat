@@ -17,7 +17,7 @@ void UTargetInfoWidget::Init(const TArray<FPriorityText>& InInfoSections)
 	{
 		FPriorityText Text;
 		InfoSections.HeapPop(Text, PriorityTextPredicate());
-		auto TextBlock = WidgetTree->ConstructWidget<UTextBlock>();
+		const auto TextBlock = WidgetTree->ConstructWidget<UTextBlock>();
 
 		TextBlock->SetText(Text.Text);
 		TextBlock->SetColorAndOpacity(Text.Color);

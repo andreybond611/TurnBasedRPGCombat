@@ -15,10 +15,10 @@ void UEndTurnWidget::NativeOnInitialized()
 
 void UEndTurnWidget::EndTurn()
 {
-	auto* PlayerController = GetOwningPlayer<ARPGPlayerController>();
+	const auto* PlayerController = GetOwningPlayer<ARPGPlayerController>();
 	if (PlayerController)
 	{
-		if (ARPGCharacter* ControlledCharacter = PlayerController->GetControlledCharacter())
+		if (const ARPGCharacter* ControlledCharacter = PlayerController->GetControlledCharacter())
 		{
 			ControlledCharacter->GetTurnBasedComponent()->EndTurn();
 		}

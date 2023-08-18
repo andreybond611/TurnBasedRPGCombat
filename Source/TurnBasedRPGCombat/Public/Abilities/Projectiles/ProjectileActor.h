@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interaction/RPGTeams.h"
 #include "ProjectileActor.generated.h"
 
 class USphereComponent;

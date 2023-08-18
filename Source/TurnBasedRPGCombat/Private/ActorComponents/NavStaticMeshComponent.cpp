@@ -32,7 +32,7 @@ void UNavStaticMeshComponent::GetNavigationData(FNavigationRelevantData& Data) c
 	}
 }
 
-void UNavStaticMeshComponent::SetNavArea(TSubclassOf<UNavArea> NavArea)
+void UNavStaticMeshComponent::SetNavArea(const TSubclassOf<UNavArea> NavArea)
 {
 	NavAreaClass = NavArea;
 	FNavigationSystem::UpdateComponentData(*this);

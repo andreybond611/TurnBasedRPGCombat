@@ -19,8 +19,8 @@ void USphereAroundTarget::StartTargeting(ARPGPlayerController* InPlayerControlle
 void USphereAroundTarget::HighlightActor(AActor* Actor)
 {
 	Target.MultipleActors.AddUnique(Actor);
-	ETeamAttitude::Type Attitude = ControlledCharacter->GetTeamAttitudeTowards(*Actor);
-	EOutlineColor OutlineColor = UTurnBasedUtility::AttitudeToOutlineColor(Attitude);
+	const ETeamAttitude::Type Attitude = ControlledCharacter->GetTeamAttitudeTowards(*Actor);
+	const EOutlineColor OutlineColor = UTurnBasedUtility::AttitudeToOutlineColor(Attitude);
 
 	EnableOutline(Actor, OutlineColor);
 	SetCircleColor(OuterCircleEnemyColor, InnerCircleEnemyColor);
@@ -49,7 +49,7 @@ bool USphereAroundTarget::SphereTraceForPawnsAround(FVector OriginLocation)
 	return bHit;
 }
 
-void USphereAroundTarget::SetCircleColor(FLinearColor OuterColor, FLinearColor InnerColor)
+void USphereAroundTarget::SetCircleColor(const FLinearColor OuterColor, const FLinearColor InnerColor)
 {
 	static const FName OuterColorParameter = "OuterColor";
 	static const FName InnerColorParameter = "InnerColor";
@@ -60,7 +60,7 @@ void USphereAroundTarget::SetCircleColor(FLinearColor OuterColor, FLinearColor I
 
 void USphereAroundTarget::TickTargetAbility(const FHitResult& CursorHitResult)
 {
-	FVector CharacterLocation = PlayerController->GetControlledCharacter()->GetLocation();
+	const FVector CharacterLocation = PlayerController->GetControlledCharacter()->GetLocation();
 
 	if (CircleDecal)
 	{

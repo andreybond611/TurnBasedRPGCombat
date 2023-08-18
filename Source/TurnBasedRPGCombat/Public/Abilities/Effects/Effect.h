@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "GameplayTagContainer.h"
 #include "Effect.generated.h"
 
@@ -18,7 +17,7 @@ class TURNBASEDRPGCOMBAT_API UEffect : public UObject
 public:
 	void ReduceTurn();
 	int32 GetTurnCount() const { return TurnCount; }
-	void SetTurnCount(int32 InTurnCount) { TurnCount = InTurnCount; }
+	void SetTurnCount(const int32 InTurnCount) { TurnCount = InTurnCount; }
 
 protected:
 	friend class UEffectComponent;

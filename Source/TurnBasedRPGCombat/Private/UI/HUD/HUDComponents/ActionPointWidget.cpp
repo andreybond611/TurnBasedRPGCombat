@@ -4,7 +4,7 @@
 #include "UI/HUD/HUDComponents/ActionPointWidget.h"
 #include "Components/Image.h"
 
-void UActionPointWidget::SetIcon(EAPIcon InIcon)
+void UActionPointWidget::SetIcon(const EAPIcon InIcon)
 {
 	UTexture2D* Texture = GetTextureFromAPIcon(InIcon);
 	IconImage->SetBrushFromTexture(Texture);
@@ -18,7 +18,7 @@ void UActionPointWidget::NativeOnInitialized()
 	
 }
 
-UTexture2D* UActionPointWidget::GetTextureFromAPIcon(EAPIcon InIcon) const
+UTexture2D* UActionPointWidget::GetTextureFromAPIcon(const EAPIcon InIcon) const
 {
 	switch (InIcon)
 	{

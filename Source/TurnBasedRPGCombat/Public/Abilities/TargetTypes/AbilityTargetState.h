@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "AbilityTargetBase.h"
-#include "UI/UITypes.h"
 #include "Utility/TurnBasedTypes.h"
 #include "AbilityTargetState.generated.h"
 

@@ -7,7 +7,7 @@
 
 void USpawnProjectileNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, const FAnimNotifyEventReference& EventReference)
 {
-	if (auto OwnerCharacter = Cast<ARPGCharacter>(MeshComp->GetOwner()))
+	if (const auto OwnerCharacter = Cast<ARPGCharacter>(MeshComp->GetOwner()))
 	{
 		OwnerCharacter->OnProjectileSpawn.ExecuteIfBound();
 	}

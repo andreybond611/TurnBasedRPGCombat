@@ -8,11 +8,11 @@
 
 EBTNodeResult::Type UBTTask_SetLocationWhenNoPath::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	auto AIController = OwnerComp.GetOwner<AAIController>();
-	if (auto Pawn = AIController->GetPawn())
+	const auto AIController = OwnerComp.GetOwner<AAIController>();
+	if (const auto Pawn = AIController->GetPawn())
 	{
-		FVector PathStart = Pawn->GetActorLocation();
-		FVector PathEnd = OwnerComp.GetBlackboardComponent()->GetValueAsVector(PathDestination.SelectedKeyName);
+		const FVector PathStart = Pawn->GetActorLocation();
+		const FVector PathEnd = OwnerComp.GetBlackboardComponent()->GetValueAsVector(PathDestination.SelectedKeyName);
 		FVector HitLocation;
 		UNavigationSystemV1::NavigationRaycast(Pawn, PathStart, PathEnd, HitLocation);
 

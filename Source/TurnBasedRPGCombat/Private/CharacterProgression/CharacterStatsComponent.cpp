@@ -17,11 +17,11 @@ void UCharacterStatsComponent::InitializeStats()
 	FindStat(SN_Health)->OnAddStat.AddUObject(this, &UCharacterStatsComponent::OnHeal);
 }
 
-void UCharacterStatsComponent::OnHeal(float HealedHealth)
+void UCharacterStatsComponent::OnHeal(const float HealedHealth)
 {
-	if (auto WidgetComponent = GetOwner()->FindComponentByClass<UWidgetComponent>())
+	if (const auto WidgetComponent = GetOwner()->FindComponentByClass<UWidgetComponent>())
 	{
-		if (auto FloatingNumbersWidget = Cast<UFloatingNumbersWidget>(WidgetComponent->GetWidget()))
+		if (const auto FloatingNumbersWidget = Cast<UFloatingNumbersWidget>(WidgetComponent->GetWidget()))
 		{
 			FloatingNumbersWidget->AddFloatingNumber(HealedHealth, EFloatingNumberColor::Heal);
 		}

@@ -24,7 +24,7 @@ void ARPGPlayerState::RemoveCharacterFromParty(ARPGCharacter* InCharacter)
 	if (InCharacter && PlayerParty.Contains(InCharacter))
 	{
 		InCharacter->RemoveControlFromPlayer();
-		FGenericTeamId FoundTeamId = OriginalTeams.FindAndRemoveChecked(InCharacter);
+		const FGenericTeamId FoundTeamId = OriginalTeams.FindAndRemoveChecked(InCharacter);
 		InCharacter->SetGenericTeamId(FoundTeamId);
 
 		PlayerParty.Remove(InCharacter);

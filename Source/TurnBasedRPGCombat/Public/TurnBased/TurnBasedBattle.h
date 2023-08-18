@@ -53,7 +53,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnAddNextTurnQueue OnAddNextTurnQueue;
 
-	void SetCurrentParticipant(FBattleParticipant Participant) { CurrentParticipant = Participant; }
+	void SetCurrentParticipant(const FBattleParticipant Participant) { CurrentParticipant = Participant; }
 	void SetCurrentTurnQueue(TArray<FBattleParticipant> TurnQueue) { CurrentTurnQueue = TurnQueue; }
 
 	TArray<FBattleParticipant> GetParticipants() const { return BattleParticipants; }

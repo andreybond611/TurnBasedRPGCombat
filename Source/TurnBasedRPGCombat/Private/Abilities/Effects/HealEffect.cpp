@@ -26,7 +26,7 @@ void UHealEffect::SpawnVisualEffect()
 
 void UHealEffect::ApplyTo(AActor* InActor)
 {
-	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(InActor))
+	if (const auto GameplayTagHolder = Cast<IGameplayTagHolder>(InActor))
 	{
 		GameplayTagHolder->AddTag(HealTag);
 	}
@@ -34,7 +34,7 @@ void UHealEffect::ApplyTo(AActor* InActor)
 	RemoveVisualEffect();
 	SpawnVisualEffect();
 
-	if (auto Stats = InActor->FindComponentByClass<UStatsComponent>())
+	if (const auto Stats = InActor->FindComponentByClass<UStatsComponent>())
 	{
 		Stats->Add(SN_Health, HealPerTurn);
 	}
@@ -42,7 +42,7 @@ void UHealEffect::ApplyTo(AActor* InActor)
 	UEffectComponent* EffectComponent = InActor->FindComponentByClass<UEffectComponent>();
 	if (EffectComponent)
 	{
-		for (TSubclassOf<UEffect> DebuffClass : EffectsToRemove)
+		for (const TSubclassOf<UEffect> DebuffClass : EffectsToRemove)
 		{
 			EffectComponent->RemoveEffectClass(DebuffClass);
 		}
@@ -51,7 +51,7 @@ void UHealEffect::ApplyTo(AActor* InActor)
 
 void UHealEffect::Remove()
 {
-	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(TargetActor))
+	if (const auto GameplayTagHolder = Cast<IGameplayTagHolder>(TargetActor))
 	{
 		GameplayTagHolder->RemoveTag(HealTag);
 	}
@@ -61,7 +61,7 @@ void UHealEffect::OnOwnerStartTurn()
 {
 	SpawnVisualEffect();
 
-	if (auto Stats = TargetActor->FindComponentByClass<UStatsComponent>())
+	if (const auto Stats = TargetActor->FindComponentByClass<UStatsComponent>())
 	{
 		Stats->Add(SN_Health, HealPerTurn);
 	}

@@ -9,7 +9,7 @@
 #include "Components/ProgressBar.h"
 #include "UnrealFramework/RPGPlayerController.h"
 
-void UCharacterPortraitWidget::Init(TScriptInterface<ITBBattleParticipant> Combatant)
+void UCharacterPortraitWidget::Init(const TScriptInterface<ITBBattleParticipant> Combatant)
 {
 	DisplayedCombatant = Combatant;
 	Image->SetBrushFromTexture(Combatant->GetPortrait());
@@ -47,8 +47,8 @@ void UCharacterPortraitWidget::NativeOnMouseLeave(const FPointerEvent& InMouseEv
 	}
 }
 
-void UCharacterPortraitWidget::OnHealthChange(float Value)
+void UCharacterPortraitWidget::OnHealthChange(const float Value)
 {
-	float HealthPercent = Value / Health->GetMaxValue();
+	const float HealthPercent = Value / Health->GetMaxValue();
 	HealthBar->SetPercent(HealthPercent);
 }

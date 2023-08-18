@@ -60,7 +60,7 @@ private:
 };
 
 template <typename EffectClass>
-bool UEffectComponent::HasEffect(TSubclassOf<UEffect> Class)
+bool UEffectComponent::HasEffect(const TSubclassOf<UEffect> Class)
 {
 	return HasEffect(Class);
 }

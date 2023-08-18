@@ -5,7 +5,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Utility/TurnBasedUtility.h"
 #include "NavigationPath.h"
-#include "Abilities/Ability.h"
 #include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
 #include "Components/DecalComponent.h"
@@ -31,7 +30,7 @@ void UMoveTarget::AddTargetInfoActor(UNavigationPath* DestinationPath, AActor* A
 		return;
 	}
 
-	float Distance = FVector::Distance(Actor->GetActorLocation(), ControlledCharacter->GetLocation());
+	const float Distance = FVector::Distance(Actor->GetActorLocation(), ControlledCharacter->GetLocation());
 	if (!DestinationPath->IsValid() && Distance > AcceptanceDistance)
 	{
 		PlayerController->AddTargetInfoSectionCantReachDestination();
@@ -109,7 +108,7 @@ void UMoveTarget::SpawnDecalsOnPath(UNavigationPath* NavigationPath)
 	{
 		TArray<FVector> FoundPoints = UTurnBasedUtility::FindPointsAlongPath(NavigationPath, DistanceBetweenPathDecals);
 
-		for (FVector Point : FoundPoints)
+		for (const FVector Point : FoundPoints)
 		{
 			UDecalComponent* Decal = UGameplayStatics::SpawnDecalAtLocation(this, PointDecalMaterial, PointDecalSize, Point);
 			PathDecals.Add(Decal);
@@ -117,7 +116,7 @@ void UMoveTarget::SpawnDecalsOnPath(UNavigationPath* NavigationPath)
 
 		if (!NavigationPath->PathPoints.IsEmpty())
 		{
-			FVector DestinationPoint = NavigationPath->PathPoints.Last();
+			const FVector DestinationPoint = NavigationPath->PathPoints.Last();
 			if (!DestinationDecalComponent)
 			{
 				DestinationDecalComponent =
@@ -129,7 +128,7 @@ void UMoveTarget::SpawnDecalsOnPath(UNavigationPath* NavigationPath)
 
 UNavigationPath* UMoveTarget::FindPathToActor(AActor* Actor)
 {
-	FVector PathStart = ControlledCharacter->GetLocation();
+	const FVector PathStart = ControlledCharacter->GetLocation();
 
 	// todo: eliminate additional pathfind and work out a better way to find closest location that doesn't rely on affecting navigation capsule
 	UNavigationPath* NavigationPath = UNavigationSystemV1::FindPathToActorSynchronously(this, PathStart, Actor);
@@ -146,7 +145,7 @@ UNavigationPath* UMoveTarget::FindPathToActor(AActor* Actor)
 		return NavigationPath;
 	}
 
-	FVector SearchedLocation = UTurnBasedUtility::GetLocationOnPathNearActor(NavigationPath, AcceptanceDistance);
+	const FVector SearchedLocation = UTurnBasedUtility::GetLocationOnPathNearActor(NavigationPath, AcceptanceDistance);
 	return UNavigationSystemV1::FindPathToLocationSynchronously(this, PathStart, SearchedLocation);
 }
 
@@ -154,8 +153,8 @@ UNavigationPath* UMoveTarget::FindPathToLocation(const FVector& Location)
 {
 	EnableDynamicObstacle();
 
-	FVector PathStart = ControlledCharacter->GetLocation();
-	FVector PathEnd = Location;
+	const FVector PathStart = ControlledCharacter->GetLocation();
+	const FVector PathEnd = Location;
 	return UNavigationSystemV1::FindPathToLocationSynchronously(this, PathStart, PathEnd);
 }
 
@@ -171,15 +170,15 @@ void UMoveTarget::AddTargetInfoLocation(UNavigationPath* DestinationPath)
 		PlayerController->AddTargetInfoSectionCantReachDestination();
 	}
 
-	float PathDistance = DestinationPath->GetPathLength();
-	int32 MoveAPCost = ControlledCharacter->CalculatePathAPCost(DestinationPath);
+	const float PathDistance = DestinationPath->GetPathLength();
+	const int32 MoveAPCost = ControlledCharacter->CalculatePathAPCost(DestinationPath);
 	PlayerController->AddTargetInfoSectionAPCost(MoveAPCost);
 
 	PlayerController->AddTargetInfoSectionDistance(PathDistance);
 
 	if (MoveAPCost > ControlledCharacter->Stats()->Get(SN_ActionPoints))
 	{
-		FText Message = NSLOCTEXT("UI", "NotEnoughAPToReachDestination", "Not enough AP to reach destination!");
+		const FText Message = NSLOCTEXT("UI", "NotEnoughAPToReachDestination", "Not enough AP to reach destination!");
 		PlayerController->AddTargetInfoSection(Message, 0, FColor::Yellow);
 	}
 }
@@ -210,7 +209,7 @@ void UMoveTarget::DisableDynamicObstacle(AActor* Actor)
 {
 	if (!DynamicObstacle || DynamicObstacle != Actor)
 	{
-		auto DynamicObstacleInterface = Cast<IDynamicObstacle>(Actor);
+		const auto DynamicObstacleInterface = Cast<IDynamicObstacle>(Actor);
 		if (DynamicObstacleInterface)
 		{
 			bShowPath = false;

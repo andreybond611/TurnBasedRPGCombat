@@ -23,7 +23,7 @@ public:
 	void Unbind();
 	bool IsBound() const;
 
-	void SetShowHealthNumbersOnlyOnMouseOver(bool bShow) { bShowHealthNumberOnlyOnMouseOver = bShow; }
+	void SetShowHealthNumbersOnlyOnMouseOver(const bool bShow) { bShowHealthNumberOnlyOnMouseOver = bShow; }
 
 protected:
 	virtual void NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;

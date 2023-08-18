@@ -40,7 +40,7 @@ public:
 	void SetControlledCharacter(ARPGCharacter* Character);
 	ARPGCharacter* GetControlledCharacter() const { return ControlledCharacter; }
 
-	void SetIsTargetAllowed(bool bInTargetAllowed) { bTargetAllowed = bInTargetAllowed; }
+	void SetIsTargetAllowed(const bool bInTargetAllowed) { bTargetAllowed = bInTargetAllowed; }
 
 	void ShowTargetInfo();
 	void ResetTargetInfo();

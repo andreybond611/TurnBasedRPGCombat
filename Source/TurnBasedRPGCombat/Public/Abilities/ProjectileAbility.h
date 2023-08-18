@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "AbilityComponent.h"
 #include "AITypes.h"
-#include "MoveAbility.h"
 #include "SimpleAbility.h"
 #include "Navigation/PathFollowingComponent.h"
 #include "ProjectileAbility.generated.h"

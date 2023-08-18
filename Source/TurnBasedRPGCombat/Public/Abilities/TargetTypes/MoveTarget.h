@@ -27,7 +27,7 @@ public:
 	virtual void TickTargetAbility(const FHitResult& CursorHitResult) override;
 	virtual void StopTargeting() override;
 
-	void SetShowPath(bool bInShowPath) { bShowPath = bInShowPath; }
+	void SetShowPath(const bool bInShowPath) { bShowPath = bInShowPath; }
 	bool IsMoveAllowed() const { return bAllowMove; }
 
 	UPROPERTY(BlueprintAssignable)

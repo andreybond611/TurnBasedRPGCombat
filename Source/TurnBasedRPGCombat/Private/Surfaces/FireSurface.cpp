@@ -11,7 +11,7 @@ void UFireSurface::OnActorEntered(AActor* Actor)
 {
 	DistancePassedOnSurface.Add(Actor, 0.f);
 
-	if (auto Damageable = Cast<IDamageable>(Actor))
+	if (const auto Damageable = Cast<IDamageable>(Actor))
 	{
 		FDamage Damage;
 		Damage.DamageNumber = DamageOnMove;
@@ -21,13 +21,13 @@ void UFireSurface::OnActorEntered(AActor* Actor)
 		Damageable->GetDamaged(Damage);
 	}
 
-	if (auto EffectComponent = Actor->FindComponentByClass<UEffectComponent>())
+	if (const auto EffectComponent = Actor->FindComponentByClass<UEffectComponent>())
 	{
 		UEffect* Effect = NewObject<UEffect>(Actor, *SurfaceEffectClass);
 		EffectComponent->AddEffect(Effect);
 	}
 
-	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(Actor))
+	if (const auto GameplayTagHolder = Cast<IGameplayTagHolder>(Actor))
 	{
 		if (!GameplayTagHolder->HasMatchingGameplayTag(SurfaceTag))
 		{
@@ -44,10 +44,10 @@ void UFireSurface::SurfaceTick(float DeltaTime)
 
 	for (AActor* Actor : Actors)
 	{
-		auto Character = Cast<ARPGCharacter>(Actor);
+		const auto Character = Cast<ARPGCharacter>(Actor);
 		if (Character && Character->IsMoving())
 		{
-			float PassedDistance = Character->GetPassedDistanceSinceLastFrame();
+			const float PassedDistance = Character->GetPassedDistanceSinceLastFrame();
 			float NewDistance = DistancePassedOnSurface.FindChecked(Actor) + PassedDistance;
 
 			if (NewDistance > DistanceThreshold)
@@ -67,7 +67,7 @@ void UFireSurface::OnActorLeft(AActor* Actor)
 {
 	DistancePassedOnSurface.Remove(Actor);
 
-	if (auto GameplayTagHolder = Cast<IGameplayTagHolder>(Actor))
+	if (const auto GameplayTagHolder = Cast<IGameplayTagHolder>(Actor))
 	{
 		if (GameplayTagHolder->HasMatchingGameplayTag(SurfaceTag))
 		{

@@ -3,17 +3,13 @@
 #include "UnrealFramework/RPGPlayerController.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
-#include "NavigationPath.h"
-#include "NavigationSystem.h"
 #include "Abilities/AbilityComponent.h"
 #include "Abilities/TargetTypes/AbilityTargetState.h"
 #include "ActorComponents/TurnBasedComponent.h"
 #include "Blueprint/SlateBlueprintLibrary.h"
 #include "CharacterProgression/StatsComponent.h"
 #include "Characters/RPGCharacter.h"
-#include "Components/DecalComponent.h"
 #include "Input/AbilityInputConfigData.h"
-#include "Kismet/GameplayStatics.h"
 #include "UI/HUD/HUDWidget.h"
 #include "UI/TargetInfoWidget.h"
 #include "UI/UITypes.h"
@@ -61,36 +57,36 @@ void ARPGPlayerController::SetControlledCharacter(ARPGCharacter* InCharacter)
 	}
 }
 
-void ARPGPlayerController::AddTargetInfoSection(const FText& Text, int32 Priority, FColor Color)
+void ARPGPlayerController::AddTargetInfoSection(const FText& Text, const int32 Priority, const FColor Color)
 {
-	FPriorityText Section = FPriorityText{Text, Priority, Color};
+	const FPriorityText Section = FPriorityText{Text, Priority, Color};
 	TargetInfoSections.Add(Section);
 }
 
-void ARPGPlayerController::AddDistanceTargetInfoSection(float Distance)
+void ARPGPlayerController::AddDistanceTargetInfoSection(const float Distance)
 {
 	FNumberFormattingOptions Options;
 	Options.MaximumFractionalDigits = 1;
-	FText DistanceText = FText::Format(NSLOCTEXT("UI", "DistanceMeters", "{0}m"), FText::AsNumber(Distance, &Options));
+	const FText DistanceText = FText::Format(NSLOCTEXT("UI", "DistanceMeters", "{0}m"), FText::AsNumber(Distance, &Options));
 	AddTargetInfoSection(DistanceText, 2);
 }
 
-void ARPGPlayerController::AddTargetInfoSectionAccuracy(float Accuracy)
+void ARPGPlayerController::AddTargetInfoSectionAccuracy(const float Accuracy)
 {
-	FText AccuracyText = FText::Format(NSLOCTEXT("UI", "Accuracy", "{0}%"), FText::AsNumber(Accuracy));
+	const FText AccuracyText = FText::Format(NSLOCTEXT("UI", "Accuracy", "{0}%"), FText::AsNumber(Accuracy));
 	AddTargetInfoSection(AccuracyText, 1);
 }
 
-void ARPGPlayerController::AddTargetInfoSectionAPCost(float APCost)
+void ARPGPlayerController::AddTargetInfoSectionAPCost(const float APCost)
 {
-	float CurrentAP = GetControlledCharacter()->Stats()->Get(SN_ActionPoints);
+	const float CurrentAP = GetControlledCharacter()->Stats()->Get(SN_ActionPoints);
 	if (APCost > CurrentAP)
 	{
 		AddTargetInfoSection(NSLOCTEXT("UI", "NotEnoughAP", "Not enough action points"), 0);
 	}
 	else
 	{
-		FText APCostText = FText::Format(NSLOCTEXT("UI", "ActionPointCost", "{0}AP"), FText::AsNumber(APCost));
+		const FText APCostText = FText::Format(NSLOCTEXT("UI", "ActionPointCost", "{0}AP"), FText::AsNumber(APCost));
 		AddTargetInfoSection(APCostText, 1);
 	}
 
@@ -101,12 +97,12 @@ void ARPGPlayerController::AddTargetInfoSectionAPCost(float APCost)
 	}
 }
 
-void ARPGPlayerController::AddTargetInfoSectionDistance(float PathDistance)
+void ARPGPlayerController::AddTargetInfoSectionDistance(const float PathDistance)
 {
-	float DistanceMeters = PathDistance / 100.f;
+	const float DistanceMeters = PathDistance / 100.f;
 	FNumberFormattingOptions Options;
 	Options.MaximumFractionalDigits = 1;
-	FText Text = FText::Format(NSLOCTEXT("UI", "DistanceMeters", "{0}m"), FText::AsNumber(DistanceMeters, &Options));
+	const FText Text = FText::Format(NSLOCTEXT("UI", "DistanceMeters", "{0}m"), FText::AsNumber(DistanceMeters, &Options));
 
 	AddTargetInfoSection(Text, 3);
 }
@@ -191,7 +187,7 @@ void ARPGPlayerController::ResetTargetInfo()
 
 void ARPGPlayerController::AddTargetInfoSectionCantReachDestination()
 {
-	FText Message = NSLOCTEXT("UI", "CannotReachDestination", "Can't reach destination");
+	const FText Message = NSLOCTEXT("UI", "CannotReachDestination", "Can't reach destination");
 	AddTargetInfoSection(Message, 0, FColor::Red);
 	AddDistanceTargetInfoSection(0.f);
 }
@@ -199,10 +195,10 @@ void ARPGPlayerController::AddTargetInfoSectionCantReachDestination()
 void ARPGPlayerController::MouseOverCharacters()
 {
 	FHitResult HitResult;
-	bool bHit = GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1 /*MouseCursor*/, false, HitResult);
+	const bool bHit = GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1 /*MouseCursor*/, false, HitResult);
 	if (bHit)
 	{
-		if (auto HitCharacter = Cast<ARPGCharacter>(HitResult.GetActor()))
+		if (const auto HitCharacter = Cast<ARPGCharacter>(HitResult.GetActor()))
 		{
 			if (HitCharacter != ControlledCharacter)
 			{
@@ -216,7 +212,7 @@ void ARPGPlayerController::MouseOverCharacters()
 	HUDWidget->SetMouseOverCharacter(nullptr);
 }
 
-void ARPGPlayerController::Tick(float DeltaSeconds)
+void ARPGPlayerController::Tick(const float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
@@ -260,7 +256,7 @@ void ARPGPlayerController::SetupInputComponent()
 	}
 }
 
-void ARPGPlayerController::ReadyAbility(int32 AbilityIndex)
+void ARPGPlayerController::ReadyAbility(const int32 AbilityIndex)
 {
 	if (ControlledCharacter)
 	{
@@ -298,7 +294,7 @@ void ARPGPlayerController::TargetAbility()
 		ResetTargetInfo();
 
 		FHitResult HitResult;
-		bool bHit = GetHitResultUnderCursor(AbilityTarget->GetCollisionChannel(), false, HitResult);
+		const bool bHit = GetHitResultUnderCursor(AbilityTarget->GetCollisionChannel(), false, HitResult);
 		if (bHit)
 		{
 			AbilityTarget->TickTargetAbility(HitResult);
@@ -329,7 +325,7 @@ void ARPGPlayerController::SetDestinationTriggered(const FInputActionValue& Inpu
 {
 	if (ControlledCharacter && !ControlledCharacter->GetTurnBasedComponent()->IsCurrentTurn())
 	{
-		bool bValue = InputActionValue.Get<bool>();
+		const bool bValue = InputActionValue.Get<bool>();
 
 		FHitResult OutHit;
 		if (bValue && GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1 /*MouseCursor*/, false, OutHit))

@@ -3,11 +3,9 @@
 
 #include "Abilities/Ability.h"
 
-#include "NiagaraComponent.h"
 #include "Abilities/TargetTypes/AbilityTargetState.h"
 #include "Abilities/TargetTypes/AIAbilityTarget.h"
 #include "Characters/RPGCharacter.h"
-#include "Particles/ParticleSystemComponent.h"
 
 void UAbility::StartAbility()
 {
