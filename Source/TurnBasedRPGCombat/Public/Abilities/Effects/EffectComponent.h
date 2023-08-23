@@ -42,8 +42,6 @@ protected:
 	virtual void PostInitProperties() override;
 	virtual void OnRegister() override;
 
-	void AddConstantEffects();
-
 private:
 	/** Applied effects */
 	UPROPERTY(VisibleInstanceOnly)
@@ -57,6 +55,9 @@ private:
 	TSubclassOf<UConstantEffectMap> ConstantEffectMap;
 
 	UEffect* FindSameClassEffect(UEffect* Effect);
+
+	void RemoveConstantEffects();
+	void AddConstantEffects();
 };
 
 template <typename EffectClass>

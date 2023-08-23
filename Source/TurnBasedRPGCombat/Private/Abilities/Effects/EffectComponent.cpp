@@ -132,15 +132,24 @@ void UEffectComponent::PostInitProperties()
 
 }
 
+void UEffectComponent::RemoveConstantEffects()
+{
+	Effects.RemoveAll([this](const UEffect* Effect)
+	{
+		auto* EffectClass = Effect->GetClass();
+		const auto* ConstantEffectsMap = Cast<UConstantEffectMap>(ConstantEffectMap->GetDefaultObject());
+		TArray<TSubclassOf<UEffect>> ConstantEffects;
+		ConstantEffectsMap->ConstantEffectClasses.GenerateValueArray(ConstantEffects);
+
+		return ConstantEffects.Contains(EffectClass);
+	});
+}
+
 void UEffectComponent::OnRegister()
 {
 	Super::OnRegister();
 
-	const FString Flags = UTurnBasedUtility::ObjectFlagToString(GetFlags());
-	UE_LOG(LogTemp, Warning, TEXT("Name: %s, Flags: %s"), *GetName(), *Flags);
-
-	if (!HasAllFlags(RF_ClassDefaultObject | RF_AllocatedInSharedPage))
-	{
-		AddConstantEffects();
-	}
+	RemoveConstantEffects();
+	AddConstantEffects();
+	
 }

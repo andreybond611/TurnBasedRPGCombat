@@ -20,10 +20,9 @@ void UGameStat::SetValue(const float InValue)
 		ActualValue = FMath::Clamp(InValue, MinValue, MaxValue);
 		OverflowValue = ActualValue;
 
-		ValueForEdit = ActualValue;
-
 		OnChange.Broadcast(ActualValue);
 	}
+	ValueForEdit = ActualValue;
 }
 
 void UGameStat::SetConstant(const float InValue)
@@ -115,6 +114,11 @@ void UGameStat::AddMultiplier(const float InMultiplier)
 	Multiplier = FMath::Clamp<float>(Multiplier + InMultiplier, 0.f, 9999.f);
 	PreviousMultiplier = Multiplier;
 	SetValue(OverflowValue * Multiplier);
+}
+
+void UGameStat::RemoveConstness()
+{
+	bIsConstant = false;
 }
 
 void UGameStat::SetStatAsMaxValue(UGameStat* InMaxValueStat)

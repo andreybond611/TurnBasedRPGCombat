@@ -42,6 +42,8 @@ public:
 	UFUNCTION(BlueprintPure)
 	float GetMultiplier() const { return Multiplier; }
 
+	void RemoveConstness();
+
 	FOnChangeStat OnChange;
 	FOnAddStat OnAddStat;
 	FOnRemoveStat OnRemoveStat;

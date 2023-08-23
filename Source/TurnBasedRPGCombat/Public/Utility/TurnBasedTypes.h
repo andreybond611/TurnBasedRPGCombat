@@ -72,6 +72,7 @@ const FName SN_FireResistance = FName("FireResistance");
 const FName SN_EarthResistance = FName("EarthResistance");
 const FName SN_PoisonResistance = FName("PoisonResistance");
 const FName SN_IceResistance = FName("IceResistance");
+const FName SN_HealResistance = FName("HealResistance");
 
 /**
  * When adding new damage type, also add a new entry in the same place in EDamageColor
@@ -85,6 +86,7 @@ enum class EDamageType : uint8
 	Earth,
 	Poison,
 	Ice,
+	Heal
 };
 
 UENUM(BlueprintType)
@@ -95,9 +97,9 @@ enum class EFloatingNumberColor : uint8
 	Earth,
 	Poison,
 	Ice,
+	Heal,
 	PhysicalArmor,
-	MagicArmor,
-	Heal
+	MagicArmor
 };
 
 USTRUCT(BlueprintType)

@@ -171,6 +171,8 @@ public:
 	virtual void GetDamaged(const FDamage& Damage) override;
 	/* IDamageable end */
 
+	void Heal(float Value);
+
 	void AddTag(const FGameplayTag& Tag);
 	void AddTags(const FGameplayTagContainer& GameplayTags);
 	void RemoveTag(const FGameplayTag& Tag);

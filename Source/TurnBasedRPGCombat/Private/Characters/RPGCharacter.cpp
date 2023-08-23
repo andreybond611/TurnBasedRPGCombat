@@ -224,6 +224,18 @@ void ARPGCharacter::GetDamaged(const FDamage& Damage)
 	PlayHitAnimation(Damage.HitDirection);
 }
 
+void ARPGCharacter::Heal(float Value)
+{
+	// Heal implemented as damage. Normally characters have 200 resistance to "heal".
+	// That enables them to heal. Undeads have 0 resistance to heal,
+	// so they get damaged if you try to heal them
+	FDamage Damage;
+	Damage.DamageNumber = Value;
+	Damage.DamageType = EDamageType::Heal;
+
+	GetDamaged(Damage);
+}
+
 bool ARPGCharacter::IsTurnAllowed()
 {
 	const FGameplayTag StunTag = FGameplayTag::RequestGameplayTag("Effect.Debuff.Stun");

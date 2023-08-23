@@ -34,9 +34,9 @@ void UHealEffect::ApplyTo(AActor* InActor)
 	RemoveVisualEffect();
 	SpawnVisualEffect();
 
-	if (const auto Stats = InActor->FindComponentByClass<UStatsComponent>())
+	if (const auto Character = Cast<ARPGCharacter>(InActor))
 	{
-		Stats->Add(SN_Health, HealPerTurn);
+		Character->Heal(HealPerTurn);
 	}
 
 	UEffectComponent* EffectComponent = InActor->FindComponentByClass<UEffectComponent>();
@@ -61,9 +61,9 @@ void UHealEffect::OnOwnerStartTurn()
 {
 	SpawnVisualEffect();
 
-	if (const auto Stats = TargetActor->FindComponentByClass<UStatsComponent>())
+	if (const auto Character = Cast<ARPGCharacter>(TargetActor))
 	{
-		Stats->Add(SN_Health, HealPerTurn);
+		Character->Heal(HealPerTurn);
 	}
 }
 
