@@ -42,7 +42,7 @@ public:
 
 	void SetTargetActor(AActor* Actor) { Target.Actor = Actor; }
 	void SetTargetLocation(FVector Location) { Target.Location = Location; }
-	void SetMultipleTargetActors(TArray<AActor*> Actors) { Target.MultipleActors = Actors; }
+	void SetMultipleTargetActors(const TArray<AActor*>& Actors) { Target.MultipleActors = Actors; }
 
 protected:
 	UPROPERTY(EditAnywhere)

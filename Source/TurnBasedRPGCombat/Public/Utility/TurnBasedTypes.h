@@ -109,9 +109,9 @@ struct FDamage
 
 	FDamage() = default;
 
-	float DamageNumber;
-	EHitDirection HitDirection;
-	EDamageType DamageType;
+	float DamageNumber = 0.f;
+	EHitDirection HitDirection = EHitDirection::None;
+	EDamageType DamageType = EDamageType::Physical;
 };
 
 UENUM(BlueprintType)

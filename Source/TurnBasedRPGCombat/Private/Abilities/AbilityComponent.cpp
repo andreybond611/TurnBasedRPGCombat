@@ -60,6 +60,11 @@ bool UAbilityComponent::CanReadyAbility(UReadiableAbility* Ability)
 
 void UAbilityComponent::ExecuteReadyAbility()
 {
+	if (!CurrentlyReadiedAbility->GetTargetState()->IsAllowedExecute())
+	{
+		return;
+	}
+
 	ExecuteAbility(CurrentlyReadiedAbility);
 	CurrentlyReadiedAbility->GetTargetState()->StopTargeting();
 	CurrentlyReadiedAbility = nullptr;

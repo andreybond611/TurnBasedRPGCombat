@@ -29,6 +29,10 @@ public:
 
 	virtual void AddToCharacter(ARPGCharacter* Character);
 	virtual void RemoveFromCharacter(ARPGCharacter* Character);
+
+	/* Overrides the default detection function IsDetected in AbilityTargetState */
+	virtual bool IsDetected(AActor* Target);
+
 	void SetAIAsTarget();
 
 	UPROPERTY(BlueprintAssignable)

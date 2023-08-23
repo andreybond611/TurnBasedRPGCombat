@@ -167,7 +167,8 @@ void ARPGCharacter::GetDamaged(const FDamage& Damage)
 
 	EFloatingNumberColor DamageColor;
 	FName ArmorStatName;
-	if (Damage.DamageType == EDamageType::Physical)
+	if (Damage.DamageType == EDamageType::Physical ||
+		Damage.DamageType == EDamageType::Heal)
 	{
 		ArmorStatName = SN_PhysicalArmor;
 		DamageColor = EFloatingNumberColor::PhysicalArmor;
@@ -232,6 +233,7 @@ void ARPGCharacter::Heal(float Value)
 	FDamage Damage;
 	Damage.DamageNumber = Value;
 	Damage.DamageType = EDamageType::Heal;
+	Damage.HitDirection = EHitDirection::None;
 
 	GetDamaged(Damage);
 }

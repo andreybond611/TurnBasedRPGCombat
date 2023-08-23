@@ -128,6 +128,7 @@ void UArcTarget::TickTargetAbility(const FHitResult& CursorHitResult)
 	StartLocation = ProjectileStart->GetComponentLocation();
 
 	bSuggestedVelocityFound = FindSuggestedVelocity(CursorHitResult, TossVelocity);
+	bAllowedExecute = false;
 
 	if (bSuggestedVelocityFound)
 	{
@@ -135,6 +136,7 @@ void UArcTarget::TickTargetAbility(const FHitResult& CursorHitResult)
 
 		if (bHit)
 		{
+			bAllowedExecute = true;
 			CreateArcSpline(TossVelocity, PredictPathResult);
 		}
 	}

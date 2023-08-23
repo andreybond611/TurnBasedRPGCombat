@@ -31,12 +31,14 @@ void URangeTarget::StartTargeting(ARPGPlayerController* InPlayerController)
 void URangeTarget::TickTargetAbility(const FHitResult& CursorHitResult)
 {
 	Target.Location = CursorHitResult.Location;
+	bAllowedExecute = true;
 	if (IsDetected(CursorHitResult.GetActor()))
 	{
 		MoveTarget->StopTargeting();
 		ProjectileArc->TickTargetAbility(CursorHitResult);
 		Target.Actor = CursorHitResult.GetActor();
 		bEnableRotating = true;
+		bAllowedExecute = ProjectileArc->IsAllowedExecute();
 	}
 	else
 	{

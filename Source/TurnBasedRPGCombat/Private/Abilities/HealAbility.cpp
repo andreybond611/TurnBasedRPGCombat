@@ -8,6 +8,11 @@
 #include "Abilities/TargetTypes/AbilityTargetState.h"
 #include "Characters/RPGCharacter.h"
 
+UHealAbility::UHealAbility()
+{
+	
+}
+
 void UHealAbility::StartAbility()
 {
 	Owner->PlayAnimMontage(AbilityMontage);
@@ -26,6 +31,24 @@ void UHealAbility::RemoveFromCharacter(ARPGCharacter* Character)
 	Super::RemoveFromCharacter(Character);
 
 	OnAnimNotifyExecuted.RemoveDynamic(this, &UHealAbility::ApplyEffect);
+}
+
+bool UHealAbility::IsDetected(AActor* Target)
+{
+	if (auto* TeamInterface = Cast<IGenericTeamAgentInterface>(Target))
+	{
+		if (TeamInterface->GetTeamAttitudeTowards(*Owner) == ETeamAttitude::Hostile)
+		{
+			if (auto* TagHolder = Cast<IGameplayTagHolder>(Target))
+			{
+				return TagHolder->HasMatchingGameplayTag(FGameplayTag::RequestGameplayTag("ConstantEffect.Undead"));
+			}
+		}
+
+		return TeamInterface->GetTeamAttitudeTowards(*Owner) == ETeamAttitude::Friendly;
+	}
+
+	return false;
 }
 
 void UHealAbility::ApplyEffect()

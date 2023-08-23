@@ -4,6 +4,7 @@
 #include "Abilities/TargetTypes/AbilityTargetBase.h"
 
 #include "GenericTeamAgentInterface.h"
+#include "Abilities/Ability.h"
 
 bool UAbilityTargetBase::IsDetected(AActor* Actor)
 {
@@ -26,7 +27,7 @@ bool UAbilityTargetBase::IsDetected(AActor* Actor)
 			bIsFriendly = TeamAgentInterface->GetTeamAttitudeTowards(*AbilityOwner) == ETeamAttitude::Friendly;
 		}
 
-		return bIsEnemy || bIsFriendly || bIsNeutral;
+		return bIsEnemy || bIsFriendly || bIsNeutral || Ability->IsDetected(Actor);
 	}
 	return false;
 }

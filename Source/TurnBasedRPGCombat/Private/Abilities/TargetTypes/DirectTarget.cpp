@@ -10,12 +10,14 @@ void UDirectTarget::TickTargetAbility(const FHitResult& CursorHitResult)
 	bEnableRotating = DistanceToTarget > MinDistanceForRotation;
 
 	AActor* HitActor = CursorHitResult.GetActor();
+	bAllowedExecute = false;
 
 	DisableOutline(Target.Actor);
 
 	if (IsDetected(HitActor) || HitActor == ControlledCharacter)
 	{
 		Target.Actor = HitActor;
+		bAllowedExecute = true;
 
 		if (const IGenericTeamAgentInterface* OwnerTeamAgent = Cast<IGenericTeamAgentInterface>(AbilityOwner))
 		{

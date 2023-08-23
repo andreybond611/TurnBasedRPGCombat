@@ -64,9 +64,12 @@ void UProjectileRadiusTarget::TickTargetAbility(const FHitResult& CursorHitResul
 	FVector AOESphereLocation = ArcTarget->GetPredictPathResult().HitResult.Location;
 
 	Target.Location = CursorHitResult.Location;
+	bAllowedExecute = false;
 
 	if (ArcTarget->IsVelocityFound())
 	{
+		bAllowedExecute = true;
+
 		// AOE sphere should spawn only on the ground, so if arc hit something higher on the way, then we lower sphere location to the ground
 		if (!FMath::IsNearlyEqual(AOESphereLocation.Z, CursorHitResult.Location.Z))
 		{

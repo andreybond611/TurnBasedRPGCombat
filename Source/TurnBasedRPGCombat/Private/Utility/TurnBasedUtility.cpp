@@ -155,6 +155,7 @@ FName UTurnBasedUtility::DamageTypeToResistanceStat(const EDamageType DamageType
 	case EDamageType::Earth: return SN_EarthResistance;
 	case EDamageType::Poison: return SN_PoisonResistance;
 	case EDamageType::Ice: return SN_IceResistance;
+	case EDamageType::Heal: return SN_HealResistance;
 	default: checkNoEntry(); return NAME_None;
 	}
 }

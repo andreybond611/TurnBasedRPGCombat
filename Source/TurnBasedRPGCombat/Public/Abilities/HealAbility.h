@@ -13,11 +13,16 @@ UCLASS()
 class TURNBASEDRPGCOMBAT_API UHealAbility : public UReadiableAbility
 {
 	GENERATED_BODY()
+
 public:
+	UHealAbility();
+
 	virtual void StartAbility() override;
 
 	virtual void AddToCharacter(ARPGCharacter* Character) override;
 	virtual void RemoveFromCharacter(ARPGCharacter* Character) override;
+
+	virtual bool IsDetected(AActor* Target) override;
 
 private:
 	UFUNCTION()

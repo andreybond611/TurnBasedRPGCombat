@@ -28,6 +28,11 @@ void UAbility::RemoveFromCharacter(ARPGCharacter* Character)
 	Owner = nullptr;
 }
 
+bool UAbility::IsDetected(AActor* Target)
+{
+	return false;
+}
+
 void UAbility::SetAIAsTarget()
 {
 	bAITarget = true;
