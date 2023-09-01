@@ -26,9 +26,9 @@ void UAbilityComponent::ReadyAbility(UReadiableAbility* Ability)
 
 		if (IsPlayerControlled())
 		{
-			PlayerController->SetAbilityTargetState(Ability->GetTargetState());
 			PlayerController->GetControlledCharacter()->GetCharacterMovement()->StopActiveMovement();
-			PlayerController->ChangeInputForReadiableAbilities();
+			PlayerController->SetReadiableAbilitiesInput();
+			PlayerController->SetAbilityTargetState(Ability->GetTargetState());
 		}
 	}
 }
@@ -48,7 +48,7 @@ void UAbilityComponent::CancelReadyAbility()
 
 		if (IsPlayerControlled())
 		{
-			PlayerController->ChangeInputForPrimaryAbilities();
+			PlayerController->SetPrimaryAbilitiesInput();
 		}
 	}
 }
@@ -71,13 +71,18 @@ void UAbilityComponent::ExecuteReadyAbility()
 
 	if (IsPlayerControlled())
 	{
-		PlayerController->ChangeInputForPrimaryAbilities();
+		PlayerController->SetPrimaryAbilitiesInput();
 	}
 }
 
 bool UAbilityComponent::IsPlayerControlled()
 {
 	return PlayerController->GetControlledCharacter() == GetOwner();
+}
+
+void UAbilityComponent::ForceEndCurrentAbility()
+{
+	CurrentlyExecutingAbility->EndAbility();
 }
 
 void UAbilityComponent::ExecuteAbility(UAbility* Ability)
@@ -92,7 +97,7 @@ void UAbilityComponent::ExecuteAbility(UAbility* Ability)
 	CurrentlyExecutingAbility = Ability;
 	CurrentlyExecutingAbility->OnAbilityDoneExecuting.AddDynamic(this, &UAbilityComponent::OnAbilityDone);
 
-	GetWorld()->GetTimerManager().SetTimer(FailSafeHandle, this, &UAbilityComponent::OnAbilityDone, MaxAbilityExecutionTime);
+	GetWorld()->GetTimerManager().SetTimer(FailSafeHandle, this, &UAbilityComponent::ForceEndCurrentAbility, MaxAbilityExecutionTime);
 }
 
 UAbility* UAbilityComponent::FindAbility(UClass* AbilityClass)

@@ -28,4 +28,9 @@ public:
 	UInputAction* ExecuteReadyAbility;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UInputAction* CancelReadyAbility;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* ConfirmTarget;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UInputAction* CancelConfirmedTarget;
 };

@@ -9,7 +9,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Surfaces/RPGSurface.h"
+#include "Surfaces/SurfaceActor.h"
 #include "Utility/TurnBasedUtility.h"
 
 void UBoulderThrowAbility::ReadyAbility()
@@ -107,7 +107,7 @@ void UBoulderThrowAbility::ProcessHits(const FVector& HitLocation, TArray<FHitRe
 
 void UBoulderThrowAbility::BoulderHit(AActor* Actor, FVector HitLocation)
 {
-	const auto SpawnedSurface = GetWorld()->SpawnActor<ARPGSurface>(*ImpactSurface, HitLocation, {});
+	const auto SpawnedSurface = GetWorld()->SpawnActor<ASurfaceActor>(*ImpactSurface, HitLocation, {});
 	SpawnedSurface->SetSurfaceSize(ImpactSize);
 
 	TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;

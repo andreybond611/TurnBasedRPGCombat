@@ -16,5 +16,5 @@ class TURNBASEDRPGCOMBAT_API UOilSurface : public UBaseSurface
 public:
 	virtual void OnActorEntered(AActor* Actor) override;
 	virtual void OnActorLeft(AActor* Actor) override;
-	virtual void OnSurfaceIntersect(ARPGSurface* OtherSurface) override;
+	virtual void OnSurfaceIntersect(ASurfaceActor* OtherSurface) override;
 };

@@ -76,6 +76,6 @@ void UFireSurface::OnActorLeft(AActor* Actor)
 	}
 }
 
-void UFireSurface::OnSurfaceIntersect(ARPGSurface* OtherSurface)
+void UFireSurface::OnSurfaceIntersect(ASurfaceActor* OtherSurface)
 {
 }

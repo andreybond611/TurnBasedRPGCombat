@@ -7,72 +7,51 @@
 #include "Characters/RPGCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Surfaces/SurfaceActor.h"
 #include "Utility/TurnBasedUtility.h"
-
-void UFlurryOfDaggersAbility::PlayFlurryAnimation()
-{
-	const float AnimationLength = Owner->PlayAnimMontage(DaggerThrowAnimations[AnimationIndex]);
-	AnimationIndex = AnimationIndex % DaggerThrowAnimations.Num();
-	AnimationIndex++;
-	DaggerThrowCount++;
-
-	checkf(AnimationLength > 0.f, TEXT("Invalid animations in ability %s"), *GetName());
-	FTimerHandle AnimationEndHandle;
-
-	if (DaggerThrowCount >= NumberOfThrows)
-	{
-		GetWorld()->GetTimerManager().SetTimer(AnimationEndHandle, this, &UFlurryOfDaggersAbility::EndAbility, AnimationLength);
-	}
-	else
-	{
-		GetWorld()->GetTimerManager().SetTimer(AnimationEndHandle, this, &UFlurryOfDaggersAbility::ThrowDagger, AnimationLength * 0.5f);
-	}
-}
 
 void UFlurryOfDaggersAbility::StartAbility()
 {
-	checkf(!DaggerThrowAnimations.IsEmpty(), TEXT("Ability %s doesn't contain anim montages"), *GetName());
-	OnAnimNotifyExecuted.AddDynamic(this, &UFlurryOfDaggersAbility::SpawnProjectile);
-	PlayFlurryAnimation();
+	Owner->PlayAnimMontage(AbilityMontage);
+
+	ProjectilesHitNum = 0;
+	OnAnimNotifyExecuted.AddDynamic(this, &UFlurryOfDaggersAbility::SpawnProjectiles);
 }
 
 void UFlurryOfDaggersAbility::EndAbility()
 {
 	Super::EndAbility();
-	OnAnimNotifyExecuted.RemoveDynamic(this, &UFlurryOfDaggersAbility::SpawnProjectile);
-	AnimationIndex = 0;
-	DaggerThrowCount = 0;
+
+	OnAnimNotifyExecuted.RemoveDynamic(this, &UFlurryOfDaggersAbility::SpawnProjectiles);
 }
 
-void UFlurryOfDaggersAbility::ThrowDagger()
+void UFlurryOfDaggersAbility::SpawnProjectiles()
 {
-	PlayFlurryAnimation();
-}
-
-void UFlurryOfDaggersAbility::SpawnProjectile()
-{
-	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
-	FActorSpawnParameters Params;
-	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	AProjectileActor* Projectile = GetWorld()->SpawnActor<AProjectileActor>(*ProjectileClass, ProjectileStart->GetComponentLocation(),
-																			ProjectileStart->GetComponentRotation(), Params);
-
-	if (ensure(Projectile))
+	for (FVector Location : GetTarget().MultipleLocations)
 	{
-		Projectile->SetProjectileOwner(Owner);
-		Projectile->GetProjectileMovement()->Velocity = GetTossVelocity();
-		Projectile->OnProjectileHitDelegate.BindUObject(this, &UFlurryOfDaggersAbility::ProjectileHit);
+		const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
+		FActorSpawnParameters Params;
+		Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		AProjectileActor* Projectile = GetWorld()->SpawnActor<AProjectileActor>(*ProjectileClass, ProjectileStart->GetComponentLocation(),
+																				ProjectileStart->GetComponentRotation(), Params);
+
+		if (ensure(Projectile))
+		{
+			Projectile->SetProjectileOwner(Owner);
+			Projectile->GetProjectileMovement()->Velocity = GetTossVelocity(Location);
+			Projectile->OnProjectileHitDelegate.BindUObject(this, &UFlurryOfDaggersAbility::ProjectileHit);
+		}
 	}
 }
 
-FVector UFlurryOfDaggersAbility::GetTossVelocity()
+FVector UFlurryOfDaggersAbility::GetTossVelocity(const FVector& TargetLocation) const
 {
 	const USceneComponent* ProjectileStart = Owner->GetProjectileStartComponent();
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(Owner);
 	FVector OutTossVelocity;
 
-	UGameplayStatics::SuggestProjectileVelocity(this, OutTossVelocity, ProjectileStart->GetComponentLocation(), GetTarget().Location, LaunchSpeed,
+	UGameplayStatics::SuggestProjectileVelocity(this, OutTossVelocity, ProjectileStart->GetComponentLocation(), TargetLocation, LaunchSpeed,
 												false, ProjectileRadius, 0.f, ESuggestProjVelocityTraceOption::OnlyTraceWhileAscending,
 												FCollisionResponseParams::DefaultResponseParam, ActorsToIgnore, false);
 	return OutTossVelocity;
@@ -91,5 +70,18 @@ void UFlurryOfDaggersAbility::ProjectileHit(AActor* HitActor, FVector Location)
 		Damage.DamageType = EDamageType::Poison;
 
 		Damageable->GetDamaged(Damage);
+	}
+
+	FTransform SurfaceTransform;
+	SurfaceTransform.SetLocation(Location);
+	const auto PoisonSurface = GetWorld()->SpawnActorDeferred<ASurfaceActor>(*SurfaceActorClass, SurfaceTransform);
+	PoisonSurface->SetSurfaceSize(SurfaceRadius);
+	PoisonSurface->SetSurfaceType(SurfaceType);
+	UGameplayStatics::FinishSpawningActor(PoisonSurface, SurfaceTransform);
+
+	++ProjectilesHitNum;
+	if (ProjectilesHitNum == GetTarget().MultipleLocations.Num())
+	{
+		EndAbility();
 	}
 }

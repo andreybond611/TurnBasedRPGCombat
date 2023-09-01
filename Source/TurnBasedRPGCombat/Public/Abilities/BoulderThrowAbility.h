@@ -36,7 +36,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "AbilityParameters")
 	float ImpactSize = 100.f;
 	UPROPERTY(EditAnywhere, Category = "AbilityParameters")
-	TSubclassOf<class ARPGSurface> ImpactSurface;
+	TSubclassOf<class ASurfaceActor> ImpactSurface;
 	UPROPERTY(EditAnywhere, Category = "AbilityParameters")
 	float DamageMultiplier = 1.5f;
 

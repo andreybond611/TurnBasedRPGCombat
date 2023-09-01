@@ -11,6 +11,7 @@ class UAIAbilityTarget;
 class UAbilityTargetState;
 class UEffect;
 class UNiagaraSystem;
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAbilityDoneExecuting);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAnimNotifyExecuted);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAnimationEnd);

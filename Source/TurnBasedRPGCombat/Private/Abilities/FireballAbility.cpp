@@ -9,7 +9,7 @@
 #include "Characters/RPGCharacter.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Surfaces/RPGSurface.h"
+#include "Surfaces/SurfaceActor.h"
 #include "Utility/TurnBasedUtility.h"
 
 void UFireballAbility::StartAbility()
@@ -87,7 +87,7 @@ void UFireballAbility::FireballHit(AActor* HitActor, FVector Location)
 
 	FTransform SurfaceTransform;
 	SurfaceTransform.SetLocation(Location);
-	const auto FireSurface = GetWorld()->SpawnActorDeferred<ARPGSurface>(*FireSurfaceActorClass, SurfaceTransform);
+	const auto FireSurface = GetWorld()->SpawnActorDeferred<ASurfaceActor>(*FireSurfaceActorClass, SurfaceTransform);
 	FireSurface->SetSurfaceSize(Radius);
 	FireSurface->SetSurfaceType(SurfaceType);
 	UGameplayStatics::FinishSpawningActor(FireSurface, SurfaceTransform);

@@ -3,14 +3,14 @@
 
 #include "Surfaces/BaseSurface.h"
 #include "NavAreas/NavArea_Null.h"
-#include "Surfaces/RPGSurface.h"
+#include "Surfaces/SurfaceActor.h"
 
 UBaseSurface::UBaseSurface()
 {
 	NavAreaClass = UNavArea_Null::StaticClass();
 }
 
-void UBaseSurface::Init(ARPGSurface* InSurfaceActor)
+void UBaseSurface::Init(ASurfaceActor* InSurfaceActor)
 {
 	SurfaceActor = InSurfaceActor;
 }
@@ -30,7 +30,7 @@ void UBaseSurface::OnActorLeft(AActor* Actor)
 
 }
 
-void UBaseSurface::OnSurfaceIntersect(ARPGSurface* OtherSurface)
+void UBaseSurface::OnSurfaceIntersect(ASurfaceActor* OtherSurface)
 {
 
 }
@@ -41,9 +41,9 @@ void UBaseSurface::ChangeSurfaceType(const TSubclassOf<UBaseSurface> InSurfaceTy
 
 	GetWorld()->GetTimerManager().SetTimerForNextTick([this]
 	{
-		for (ARPGSurface* OverlappingSurface : SurfaceActor->GetOverlappingSurfaces())
+		for (ASurfaceActor* OverlappingSurface : SurfaceActor->GetOverlappingSurfaces())
 		{
-			const ARPGSurface* OverlappingSurfaceActor = CastChecked<ARPGSurface>(OverlappingSurface);
+			const ASurfaceActor* OverlappingSurfaceActor = CastChecked<ASurfaceActor>(OverlappingSurface);
 			OverlappingSurfaceActor->GetSurface()->OnSurfaceIntersect(SurfaceActor);
 		}
 	});

@@ -25,6 +25,8 @@ public:
 	virtual void TickTargetAbility(const FHitResult& CursorHitResult) override;
 	virtual void StopTargeting() override;
 
+	void SetSphereRadius(AAOESphereActor* AOESphere);
+
 	FVector GetTossVelocity() const { return ArcTarget->GetTossVelocity(); }
 	float GetProjectileRadius() const { return ArcTarget->GetProjectileRadius();  }
 	void SetAOESphereRadius(const float InRadius) { AOESphereRadius = InRadius; }
@@ -40,10 +42,7 @@ private:
 	UPROPERTY()
 	AAOESphereActor* SpawnedAOESphere;
 	FVector SphereScale;
-	UPROPERTY()
-	TArray<TScriptInterface<IOutlinable>> OutlinableActors;
 
-	void SetSphereRadius();
 	bool SphereTraceInLocation(FVector Location, TArray<FHitResult>& OutHitResults);
 	void DetectTargets(TArray<FHitResult> OutHitResults);
 	void DestroySphere();

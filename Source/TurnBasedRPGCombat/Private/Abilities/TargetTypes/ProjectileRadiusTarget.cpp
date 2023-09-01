@@ -18,15 +18,15 @@ void UProjectileRadiusTarget::StartTargeting(ARPGPlayerController* InPlayerContr
 	ArcTarget->StartTargeting(InPlayerController);
 }
 
-void UProjectileRadiusTarget::SetSphereRadius()
+void UProjectileRadiusTarget::SetSphereRadius(AAOESphereActor* AOESphere)
 {
-	const float SphereRadius = SpawnedAOESphere->GetSphereCollision()->GetUnscaledSphereRadius();
+	const float SphereRadius = AOESphere->GetSphereCollision()->GetUnscaledSphereRadius();
 	const float Scale = AOESphereRadius / SphereRadius;
-	SphereScale = SpawnedAOESphere->GetActorScale3D();
+	SphereScale = AOESphere->GetActorScale3D();
 	SphereScale.X = Scale;
 	SphereScale.Y = Scale;
 	SphereScale.Z = Scale > 2.f ? Scale / 2.f : SphereScale.Z;
-	SpawnedAOESphere->SetActorScale3D(SphereScale);
+	AOESphere->SetActorScale3D(SphereScale);
 }
 
 bool UProjectileRadiusTarget::SphereTraceInLocation(FVector Location, TArray<FHitResult>& OutHitResults)
@@ -63,7 +63,7 @@ void UProjectileRadiusTarget::TickTargetAbility(const FHitResult& CursorHitResul
 	ArcTarget->TickTargetAbility(CursorHitResult);
 	FVector AOESphereLocation = ArcTarget->GetPredictPathResult().HitResult.Location;
 
-	Target.Location = CursorHitResult.Location;
+	Target.Location = ArcTarget->GetTarget().Location;
 	bAllowedExecute = false;
 
 	if (ArcTarget->IsVelocityFound())
@@ -71,7 +71,7 @@ void UProjectileRadiusTarget::TickTargetAbility(const FHitResult& CursorHitResul
 		bAllowedExecute = true;
 
 		// AOE sphere should spawn only on the ground, so if arc hit something higher on the way, then we lower sphere location to the ground
-		if (!FMath::IsNearlyEqual(AOESphereLocation.Z, CursorHitResult.Location.Z))
+		if (!FMath::IsNearlyEqual(AOESphereLocation.Z, Target.Location.Z))
 		{
 			AOESphereLocation.Z = CursorHitResult.Location.Z;
 			ArcTarget->StopTargeting();
@@ -89,7 +89,7 @@ void UProjectileRadiusTarget::TickTargetAbility(const FHitResult& CursorHitResul
 		if (ensure(SpawnedAOESphere))
 		{
 			SpawnedAOESphere->SetActorLocation(AOESphereLocation);
-			SetSphereRadius();
+			SetSphereRadius(SpawnedAOESphere);
 
 			TArray<FHitResult> OutHitResults;
 			const bool bHit = SphereTraceInLocation(AOESphereLocation, OutHitResults);

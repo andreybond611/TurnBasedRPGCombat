@@ -138,6 +138,7 @@ void UArcTarget::TickTargetAbility(const FHitResult& CursorHitResult)
 		{
 			bAllowedExecute = true;
 			CreateArcSpline(TossVelocity, PredictPathResult);
+			Target.Location = PredictPathResult.HitResult.Location;
 		}
 	}
 }

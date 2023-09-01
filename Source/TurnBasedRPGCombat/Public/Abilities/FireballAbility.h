@@ -6,7 +6,7 @@
 #include "ReadiableAbility.h"
 #include "FireballAbility.generated.h"
 
-class ARPGSurface;
+class ASurfaceActor;
 class UBaseSurface;
 class AProjectileActor;
 /**
@@ -24,7 +24,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AProjectileActor> ProjectileClass;
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ARPGSurface> FireSurfaceActorClass;
+	TSubclassOf<ASurfaceActor> FireSurfaceActorClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UBaseSurface> SurfaceType;
 	UPROPERTY(EditAnywhere)

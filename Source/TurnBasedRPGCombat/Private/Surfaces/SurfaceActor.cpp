@@ -1,11 +1,11 @@
 // Copyright 2022 - 2023 Andrei Bondarenko. All rights reserved
 
-#include "Surfaces/RPGSurface.h"
+#include "Surfaces/SurfaceActor.h"
 #include "ActorComponents/NavStaticMeshComponent.h"
 #include "Components/DecalComponent.h"
 #include "Surfaces/BaseSurface.h"
 
-ARPGSurface::ARPGSurface()
+ASurfaceActor::ASurfaceActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -27,16 +27,16 @@ ARPGSurface::ARPGSurface()
 	CollisionShape->SetCollisionResponseToChannel(ECC_GameTraceChannel4 /*Surface*/, ECR_Overlap);
 	CollisionShape->SetCollisionResponseToChannel(ECC_GameTraceChannel5 /*CharacterFeet*/, ECR_Overlap);
 
-	CollisionShape->OnComponentBeginOverlap.AddDynamic(this, &ARPGSurface::OnOverlapBegin);
-	CollisionShape->OnComponentEndOverlap.AddDynamic(this, &ARPGSurface::OnOverlapEnd);
+	CollisionShape->OnComponentBeginOverlap.AddDynamic(this, &ASurfaceActor::OnOverlapBegin);
+	CollisionShape->OnComponentEndOverlap.AddDynamic(this, &ASurfaceActor::OnOverlapEnd);
 }
 
-void ARPGSurface::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+void ASurfaceActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
 								 bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor->IsA<ARPGSurface>())
+	if (OtherActor->IsA<ASurfaceActor>())
 	{
-		const auto OverlappingSurface = CastChecked<ARPGSurface>(OtherActor);
+		const auto OverlappingSurface = CastChecked<ASurfaceActor>(OtherActor);
 		OverlappingSurfaces.Add(OverlappingSurface);
 		Surface->OnSurfaceIntersect(OverlappingSurface);
 		return;
@@ -45,18 +45,18 @@ void ARPGSurface::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActo
 	Surface->OnActorEntered(OtherActor);
 }
 
-void ARPGSurface::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void ASurfaceActor::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	Surface->OnActorLeft(OtherActor);
 }
 
-void ARPGSurface::SetSurfaceSize(const float InSize)
+void ASurfaceActor::SetSurfaceSize(const float InSize)
 {
 	SurfaceSize = InSize;
 	CalculateSize();
 }
 
-void ARPGSurface::SetSurfaceType(const TSubclassOf<UBaseSurface> InSurfaceType)
+void ASurfaceActor::SetSurfaceType(const TSubclassOf<UBaseSurface> InSurfaceType)
 {
 	static const FName DecalShapeParameterName = "DecalShape";
 
@@ -65,6 +65,7 @@ void ARPGSurface::SetSurfaceType(const TSubclassOf<UBaseSurface> InSurfaceType)
 		Surface = NewObject<UBaseSurface>(this, *InSurfaceType);
 		Surface->Init(this);
 		NavAreaClass = Surface->GetNavArea();
+
 		CollisionShape->SetNavArea(NavAreaClass);
 
 		DecalMaterialInstance = UMaterialInstanceDynamic::Create(Surface->GetMaterial(), this);
@@ -76,14 +77,17 @@ void ARPGSurface::SetSurfaceType(const TSubclassOf<UBaseSurface> InSurfaceType)
 	}
 }
 
-void ARPGSurface::CalculateSize()
+void ASurfaceActor::CalculateSize()
 {
-	Decal->DecalSize = FVector{200.f, SurfaceSize, SurfaceSize};
-	const float MeshScale = SurfaceSize / ShapeSize;
-	CollisionShape->SetRelativeScale3D(FVector{MeshScale, MeshScale, 1.f});
+	if (Decal && CollisionShape)
+	{
+		Decal->DecalSize = FVector{ 200.f, SurfaceSize, SurfaceSize };
+		const float MeshScale = SurfaceSize / ShapeSize;
+		CollisionShape->SetRelativeScale3D(FVector{ MeshScale, MeshScale, 1.f });
+	}
 }
 
-void ARPGSurface::OnConstruction(const FTransform& Transform)
+void ASurfaceActor::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
@@ -92,13 +96,14 @@ void ARPGSurface::OnConstruction(const FTransform& Transform)
 	DecalMaterialInstance = UMaterialInstanceDynamic::Create(SurfaceMaterial, this);
 	DecalMaterialInstance->SetTextureParameterValue(DecalShapeParameterName, TextureShape);
 	Decal->SetDecalMaterial(DecalMaterialInstance);
+	CollisionShape->SetMaterial(0, CollisionMeshMaterial);
 
 	SetSurfaceType(SurfaceType);
 
 	CalculateSize();
 }
 
-void ARPGSurface::Tick(const float DeltaTime)
+void ASurfaceActor::Tick(const float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 

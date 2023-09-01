@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "RPGSurface.generated.h"
+#include "SurfaceActor.generated.h"
 
 class ARPGCharacter;
 class USphereComponent;
@@ -13,16 +13,16 @@ class UBaseSurface;
 class UNavArea;
 
 UCLASS()
-class TURNBASEDRPGCOMBAT_API ARPGSurface : public AActor
+class TURNBASEDRPGCOMBAT_API ASurfaceActor : public AActor
 {
 	GENERATED_BODY()
-	ARPGSurface();
 public:
+	ASurfaceActor();
 	void SetSurfaceSize(float InSize);
 	void SetSurfaceType(TSubclassOf<UBaseSurface> InSurfaceType);
 	TSubclassOf<UBaseSurface> GetSurfaceType() const { return SurfaceType; }
 	UBaseSurface* GetSurface() const { return Surface; }
-	TArray<ARPGSurface*> GetOverlappingSurfaces() const { return OverlappingSurfaces; }
+	TArray<ASurfaceActor*> GetOverlappingSurfaces() const { return OverlappingSurfaces; }
 
 protected:
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -33,6 +33,8 @@ private:
 	TSubclassOf<UNavArea> NavAreaClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UBaseSurface> SurfaceType;
+	UPROPERTY(EditAnywhere)
+	UMaterialInterface* CollisionMeshMaterial;
 
 	/** Size of collision mesh */
 	UPROPERTY(EditAnywhere, Category = "Size")
@@ -56,7 +58,7 @@ private:
 	UTexture2D* TextureShape;
 
 	UPROPERTY(VisibleInstanceOnly)
-	TArray<ARPGSurface*> OverlappingSurfaces;
+	TArray<ASurfaceActor*> OverlappingSurfaces;
 
 	UPROPERTY()
 	TArray<AActor*> OverlappingActors;

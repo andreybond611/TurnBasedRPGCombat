@@ -46,6 +46,7 @@ struct FTarget
 	AActor* Actor = nullptr;
 	UPROPERTY()
 	TArray<AActor*> MultipleActors;
+	TArray<FVector> MultipleLocations;
 };
 
 constexpr float MaxStatValue = 9999.f;

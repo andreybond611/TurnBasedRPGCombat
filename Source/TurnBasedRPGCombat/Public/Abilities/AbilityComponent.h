@@ -43,6 +43,8 @@ public:
 	void ExecuteReadyAbility();
 	bool IsPlayerControlled();
 
+	void ForceEndCurrentAbility();
+
 	UFUNCTION(BlueprintCallable)
 	void ExecuteAbility(UAbility* Ability);
 

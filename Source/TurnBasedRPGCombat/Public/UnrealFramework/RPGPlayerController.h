@@ -52,8 +52,9 @@ public:
 	void AddTargetInfoSectionCantReachDestination();
 
 	void SetAbilityTargetState(UAbilityTargetState* InAbilityTarget);
-	void ChangeInputForReadiableAbilities();
-	void ChangeInputForPrimaryAbilities();
+	void SetReadiableAbilitiesInput();
+	void SetPrimaryAbilitiesInput();
+	void SetMultiTargetInput();
 
 	UPROPERTY(BlueprintAssignable)
 	FOnControlledCharacterChanged OnControlledCharacterChanged;
@@ -70,6 +71,8 @@ private:
 	UInputMappingContext* DefaultMouseMappingContext;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* AbilityMouseMappingContext;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputMappingContext* MultiTargetMouseMappingContext;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputMappingContext* AbilityMappingContext;
 
@@ -105,6 +108,9 @@ private:
 	UPROPERTY()
 	ARPGCharacter* CharacterUnderCursor;
 
+	int32 AbilityInputPriority = 1;
+	int32 MultiAbilityTargetInputPriority = 2;
+
 	void MouseOverCharacters();
 	void SetControlledCharacterPrimaryAbilityTarget();
 
@@ -113,11 +119,15 @@ private:
 
 	// Input callbacks
 
+public:
+	void CancelReadyAbility();
+	void ExecuteReadyAbility();
+
+private:
 	void ExecutePrimaryAbility();
 	void SetDestination();
 	void SetDestinationTriggered(const FInputActionValue& InputActionValue);
 	void ReadyAbility(int32 AbilityIndex);
-	void ExecuteReadyAbility();
-	void CancelReadyAbility();
+	void ConfirmTarget();
+	void CancelConfirmedTarget();
 };
-

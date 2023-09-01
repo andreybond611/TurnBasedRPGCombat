@@ -6,7 +6,7 @@
 #include "GameplayTagContainer.h"
 #include "BaseSurface.generated.h"
 
-class ARPGSurface;
+class ASurfaceActor;
 class UEffect;
 class UNavArea;
 
@@ -20,11 +20,11 @@ class TURNBASEDRPGCOMBAT_API UBaseSurface : public UObject
 public:
 	UBaseSurface();
 
-	virtual void Init(ARPGSurface* InSurfaceActor);
+	virtual void Init(ASurfaceActor* InSurfaceActor);
 	virtual void OnActorEntered(AActor* Actor);
 	virtual void SurfaceTick(float DeltaTime);
 	virtual void OnActorLeft(AActor* Actor);
-	virtual void OnSurfaceIntersect(ARPGSurface* OtherSurface);
+	virtual void OnSurfaceIntersect(ASurfaceActor* OtherSurface);
 
 	TSubclassOf<UNavArea> GetNavArea() const { return NavAreaClass; }
 
@@ -36,7 +36,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UNavArea> NavAreaClass;
 	UPROPERTY()
-	ARPGSurface* SurfaceActor;
+	ASurfaceActor* SurfaceActor;
 	UPROPERTY(EditAnywhere)
 	UMaterialInterface* Material;
 

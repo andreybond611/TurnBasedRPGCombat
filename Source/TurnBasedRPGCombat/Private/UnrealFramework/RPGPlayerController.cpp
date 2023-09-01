@@ -5,6 +5,7 @@
 #include "EnhancedInputComponent.h"
 #include "Abilities/AbilityComponent.h"
 #include "Abilities/TargetTypes/AbilityTargetState.h"
+#include "Abilities/TargetTypes/MultiTarget.h"
 #include "ActorComponents/TurnBasedComponent.h"
 #include "Blueprint/SlateBlueprintLibrary.h"
 #include "CharacterProgression/StatsComponent.h"
@@ -120,19 +121,37 @@ void ARPGPlayerController::SetAbilityTargetState(UAbilityTargetState* InAbilityT
 	}
 }
 
-void ARPGPlayerController::ChangeInputForReadiableAbilities()
+void ARPGPlayerController::SetReadiableAbilitiesInput()
 {
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
-		Subsystem->AddMappingContext(AbilityMouseMappingContext, 1);
+		Subsystem->AddMappingContext(AbilityMouseMappingContext, AbilityInputPriority);
+	}
+
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(MultiTargetMouseMappingContext);
 	}
 }
 
-void ARPGPlayerController::ChangeInputForPrimaryAbilities()
+void ARPGPlayerController::SetPrimaryAbilitiesInput()
 {
-	if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		Subsystem->RemoveMappingContext(AbilityMouseMappingContext);
+	}
+
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->RemoveMappingContext(MultiTargetMouseMappingContext);
+	}
+}
+
+void ARPGPlayerController::SetMultiTargetInput()
+{
+	if (auto* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
+	{
+		Subsystem->AddMappingContext(MultiTargetMouseMappingContext, MultiAbilityTargetInputPriority);
 	}
 }
 
@@ -253,6 +272,10 @@ void ARPGPlayerController::SetupInputComponent()
 										   &ARPGPlayerController::ExecuteReadyAbility);
 		EnhancedInputComponent->BindAction(AbilityInputConfig->CancelReadyAbility, ETriggerEvent::Started, this,
 										   &ARPGPlayerController::CancelReadyAbility);
+
+		EnhancedInputComponent->BindAction(AbilityInputConfig->ConfirmTarget, ETriggerEvent::Started, this, &ARPGPlayerController::ConfirmTarget);
+		EnhancedInputComponent->BindAction(AbilityInputConfig->CancelConfirmedTarget, ETriggerEvent::Started, this,
+										   &ARPGPlayerController::CancelConfirmedTarget);
 	}
 }
 
@@ -283,6 +306,25 @@ void ARPGPlayerController::CancelReadyAbility()
 {
 	SetControlledCharacterPrimaryAbilityTarget();
 	GetControlledCharacter()->UnReadyCurrentAbility();
+}
+
+void ARPGPlayerController::ConfirmTarget()
+{
+	if (auto MultiTarget = Cast<UMultiTarget>(AbilityTarget))
+	{
+		if (MultiTarget->CanConfirmTarget())
+		{
+			MultiTarget->ConfirmTarget();
+		}
+	}
+}
+
+void ARPGPlayerController::CancelConfirmedTarget()
+{
+	if (auto MultiTarget = Cast<UMultiTarget>(AbilityTarget))
+	{
+		MultiTarget->CancelConfirmedTarget();
+	}
 }
 
 void ARPGPlayerController::TargetAbility()

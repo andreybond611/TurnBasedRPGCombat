@@ -6,28 +6,31 @@
 #include "Abilities/ReadiableAbility.h"
 #include "FlurryOfDaggersAbility.generated.h"
 
+class UBaseSurface;
 class AProjectileActor;
+class ASurfaceActor;
+
 /**
- * Throws several projectiles
+ * Throws several projectiles and creates poison surfaces under the hit locations
  */
 UCLASS()
 class TURNBASEDRPGCOMBAT_API UFlurryOfDaggersAbility : public UReadiableAbility
 {
 	GENERATED_BODY()
 public:
-	void PlayFlurryAnimation();
 	virtual void StartAbility() override;
 	virtual void EndAbility() override;
 
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AProjectileActor> ProjectileClass;
-
 	UPROPERTY(EditAnywhere)
-	TArray<UAnimMontage*> DaggerThrowAnimations;
-
+	TSubclassOf<ASurfaceActor> SurfaceActorClass;
 	UPROPERTY(EditAnywhere)
-	int32 NumberOfThrows = 3;
+	TSubclassOf<UBaseSurface> SurfaceType;
+	UPROPERTY(EditAnywhere)
+	float SurfaceRadius = 70.f;
+
 	UPROPERTY(EditAnywhere)
 	float DamageMultiplier = 1.5f;
 	UPROPERTY(EditAnywhere)
@@ -35,17 +38,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	float ProjectileRadius = 1.f;
 
-	int32 DaggerThrowCount;
-	int32 AnimationIndex;
+	int32 ProjectilesHitNum = 0;
 
 	UFUNCTION()
-	void ThrowDagger();
-	UFUNCTION()
-	void SpawnProjectile();
+	void SpawnProjectiles();
 	UFUNCTION()
 	void ProjectileHit(AActor* HitActor, FVector Location);
 
-	FVector GetTossVelocity();
+	FVector GetTossVelocity(const FVector& TargetLocation) const;
 };
 
 
